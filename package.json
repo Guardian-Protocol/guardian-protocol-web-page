@@ -78,5 +78,5 @@
   "lint-staged": {
     "./**/*.{js,css,ts,tsx}": "eslint --fix"
   },
-  "homepage": "https://guardian-protocol.github.io/"
+  "homepage": "https://Guardian-Protocol.github.io/guardian-protocol-web-page"
 }
