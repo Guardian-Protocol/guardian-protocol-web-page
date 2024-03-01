@@ -20,7 +20,7 @@ import {
   Flex,
   Grid,
   Box,
-  Text
+  Text,
 } from "@chakra-ui/react";
 import { useApi, useAlert, useAccount } from "@gear-js/react-hooks";
 import { useState, useEffect } from "react";
@@ -28,6 +28,7 @@ import { web3FromSource } from "@polkadot/extension-dapp";
 import { ProgramMetadata, encodeAddress } from "@gear-js/api";
 import VaraLogo from "../../assets/images/VaraLogo.png";
 import XBackground from "../../assets/images/XBackground.svg";
+import { AccountsModal } from "../../components/layout/header/account/accounts-modal/AccountsModal"
 
 function Home() {
   useEffect(() => {
@@ -85,6 +86,8 @@ function Home() {
   // Add your metadata.txt
   const meta =
     "00010001000000000001040000000106000000000000000107000000b5072c000808696f18496e69744654000004013466745f70726f6772616d5f696404011c4163746f72496400000410106773746418636f6d6d6f6e287072696d6974697665731c4163746f724964000004000801205b75383b2033325d000008000003200000000c000c0000050300100808696f444c69717569645374616b65416374696f6e000108145374616b6504001401107531323800000020576974686472617704001401107531323800010000140000050700180808696f404c69717569645374616b654576656e740001083c5375636365737366756c5374616b65000000445375636365737366756c556e7374616b65000100001c0808696f34496f4c69717569645374616b6500001c01146f776e657204011c4163746f7249640001547374616b696e675f746f6b656e5f6164647265737304011c4163746f72496400015876617261746f6b656e5f746f74616c5f7374616b65641401107531323800014c746f74616c5f74696d655f70726f746f636f6c20010c7536340001606776617261746f6b656e735f7265776172645f746f74616c14011075313238000144646973747269627574696f6e5f74696d6520010c75363400011475736572732401505665633c284163746f7249642c2075313238293e00002000000506002400000228002800000408041400";
+
+  const programStateMeta = "";
 
   const metadata = ProgramMetadata.from(meta);
 
@@ -154,14 +157,27 @@ function Home() {
     setStakeamount(event.target.value);
   };
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
-    <GridItem w="100%" h="100%" 
-    style={{
-      backgroundImage: `url(${XBackground})`,
-      backgroundRepeat: 'no-repeat',
-      backgroundSize: '120%', // Ajusta este valor según sea necesario
-      backgroundPosition: '50% 80%', // Ajusta estos valores según sea necesario
-    }}>
+    <GridItem
+      w="100%"
+      h="100%"
+      style={{
+        backgroundImage: `url(${XBackground})`,
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "120%", // Ajusta este valor según sea necesario
+        backgroundPosition: "50% 80%", // Ajusta estos valores según sea necesario
+      }}
+    >
       <Box h="90px" />
       <Center>
         <Tabs
@@ -232,10 +248,17 @@ function Home() {
                         id="espacio"
                         style={{ marginBottom: "3px !important" }}
                       >
-                        <Td fontSize="18px" style={{ color: "white" }}>Amount</Td>
+                        <Td fontSize="18px" style={{ color: "white" }}>
+                          Amount
+                        </Td>
                         <Td style={{ visibility: "hidden" }}>.</Td>
                       </Tr>
-                      <Td fontSize="18px" isNumeric textAlign="end" style={{ color: "white" }}>
+                      <Td
+                        fontSize="18px"
+                        isNumeric
+                        textAlign="end"
+                        style={{ color: "white" }}
+                      >
                         Available: {account?.balance.value} VARA
                       </Td>
                     </Grid>
@@ -302,7 +325,11 @@ function Home() {
 
                     <Grid templateColumns="1fr auto" gap="1">
                       <Tr textColor="white">
-                        <Td fontSize="18px" fontWeight="bold" style={{ color: "white" }}>
+                        <Td
+                          fontSize="18px"
+                          fontWeight="bold"
+                          style={{ color: "white" }}
+                        >
                           You will recieve
                         </Td>
                         <Td style={{ visibility: "hidden" }}>.</Td>
@@ -326,30 +353,51 @@ function Home() {
 
                     <Grid templateColumns="1fr auto" gap="1">
                       <Tr textColor="white">
-                        <Td fontSize="18px" style={{ color: "white" }}>Total Balance </Td>
+                        <Td fontSize="18px" style={{ color: "white" }}>
+                          Total Balance{" "}
+                        </Td>
                         <Td style={{ visibility: "hidden" }}>.</Td>
                       </Tr>
-                      <Td fontSize="18px" isNumeric textAlign="end" style={{ color: "white" }}>
+                      <Td
+                        fontSize="18px"
+                        isNumeric
+                        textAlign="end"
+                        style={{ color: "white" }}
+                      >
                         4.00%
                       </Td>
                     </Grid>
 
                     <Grid templateColumns="1fr auto" gap="1">
                       <Tr textColor="white">
-                        <Td fontSize="18px" style={{ color: "white" }}>Locked</Td>
+                        <Td fontSize="18px" style={{ color: "white" }}>
+                          Locked
+                        </Td>
                         <Td style={{ visibility: "hidden" }}>.</Td>
                       </Tr>
-                      <Td fontSize="18px" isNumeric textAlign="end" style={{ color: "white" }}>
+                      <Td
+                        fontSize="18px"
+                        isNumeric
+                        textAlign="end"
+                        style={{ color: "white" }}
+                      >
                         0.0%
                       </Td>
                     </Grid>
 
                     <Grid templateColumns="1fr auto" gap="1">
                       <Tr textColor="white">
-                        <Td fontSize="18px" style={{ color: "white" }}>Available</Td>
+                        <Td fontSize="18px" style={{ color: "white" }}>
+                          Available
+                        </Td>
                         <Td style={{ visibility: "hidden" }}>.</Td>
                       </Tr>
-                      <Td fontSize="18px" isNumeric textAlign="end" style={{ color: "white" }}>
+                      <Td
+                        fontSize="18px"
+                        isNumeric
+                        textAlign="end"
+                        style={{ color: "white" }}
+                      >
                         10%
                       </Td>
                     </Grid>
@@ -360,18 +408,34 @@ function Home() {
                       justifyContent="center"
                       alignItems="center"
                     >
-                      <Button
-                        colorScheme="teal"
-                        size="lg"
-                        style={{
-                          color: "black",
-                          background: "#F8AD18",
-                          width: "240px",
-                        }}
-                        onClick={() => signer(stakemessage)}
-                      >
-                        Connect Wallet
-                      </Button>
+                      {account ? (
+                        <Button
+                          colorScheme="teal"
+                          size="lg"
+                          style={{
+                            color: "black",
+                            background: "#F8AD18",
+                            width: "240px",
+                          }}
+                          onClick={() => signer(stakemessage)}
+                        >
+                          Stake
+                        </Button>
+                      ) : (
+                        <Button
+                          colorScheme="teal"
+                          size="lg"
+                          style={{
+                            color: "black",
+                            background: "#F8AD18",
+                            width: "240px",
+                          }}
+                          onClick={openModal}
+                        >
+                          Connect Wallet
+                        </Button>
+                      )}
+                      {isModalOpen && <AccountsModal accounts={accounts} close={closeModal} />}
                     </Td>
                   </Tbody>
                 </Table>
@@ -399,10 +463,17 @@ function Home() {
                         id="espacio"
                         style={{ marginBottom: "3px !important" }}
                       >
-                        <Td fontSize="18px" style={{ color: "white" }}>Amount</Td>
+                        <Td fontSize="18px" style={{ color: "white" }}>
+                          Amount
+                        </Td>
                         <Td style={{ visibility: "hidden" }}>.</Td>
                       </Tr>
-                      <Td fontSize="18px" isNumeric textAlign="end" style={{ color: "white" }}>
+                      <Td
+                        fontSize="18px"
+                        isNumeric
+                        textAlign="end"
+                        style={{ color: "white" }}
+                      >
                         Available: {gVARAbalance} gVARA
                       </Td>
                     </Grid>
@@ -415,7 +486,12 @@ function Home() {
                             paddingTop="10px"
                             w="90px"
                           >
-                            <Text fontFamily="'Consolas', italic" color="turquoise">g</Text>
+                            <Text
+                              fontFamily="'Consolas', italic"
+                              color="turquoise"
+                            >
+                              g
+                            </Text>
                             <Image src={VaraLogo} h="60px" w="60px" />
                           </InputLeftElement>
                           <Input
@@ -470,7 +546,11 @@ function Home() {
 
                     <Grid templateColumns="1fr auto" gap="4">
                       <Tr textColor="white">
-                        <Td fontSize="18px" fontWeight="bold" style={{ color: "white" }}>
+                        <Td
+                          fontSize="18px"
+                          fontWeight="bold"
+                          style={{ color: "white" }}
+                        >
                           You will recieve
                         </Td>
                         <Td style={{ visibility: "hidden", color: "white" }}>
@@ -496,32 +576,53 @@ function Home() {
 
                     <Grid templateColumns="1fr auto" gap="4">
                       <Tr textColor="white">
-                        <Td fontSize="18px" style={{ color: "white" }}>Total Balance</Td>
+                        <Td fontSize="18px" style={{ color: "white" }}>
+                          Total Balance
+                        </Td>
                         <Td style={{ visibility: "hidden", color: "white" }}>
                           .
                         </Td>
                       </Tr>
-                      <Td fontSize="18px" isNumeric textAlign="end" style={{ color: "white" }}>
+                      <Td
+                        fontSize="18px"
+                        isNumeric
+                        textAlign="end"
+                        style={{ color: "white" }}
+                      >
                         4.00%
                       </Td>
                     </Grid>
 
                     <Grid templateColumns="1fr auto" gap="4">
                       <Tr textColor="white">
-                        <Td fontSize="18px" style={{ color: "white" }}>Locked</Td>
+                        <Td fontSize="18px" style={{ color: "white" }}>
+                          Locked
+                        </Td>
                         <Td style={{ visibility: "hidden" }}>.</Td>
                       </Tr>
-                      <Td fontSize="18px" isNumeric textAlign="end" style={{ color: "white" }}>
+                      <Td
+                        fontSize="18px"
+                        isNumeric
+                        textAlign="end"
+                        style={{ color: "white" }}
+                      >
                         0.0%
                       </Td>
                     </Grid>
 
                     <Grid templateColumns="1fr auto" gap="4">
                       <Tr textColor="white">
-                        <Td fontSize="18px" style={{ color: "white" }}>Available</Td>
+                        <Td fontSize="18px" style={{ color: "white" }}>
+                          Available
+                        </Td>
                         <Td style={{ visibility: "hidden" }}>.</Td>
                       </Tr>
-                      <Td fontSize="18px" isNumeric textAlign="end" style={{ color: "white" }}>
+                      <Td
+                        fontSize="18px"
+                        isNumeric
+                        textAlign="end"
+                        style={{ color: "white" }}
+                      >
                         10%
                       </Td>
                     </Grid>
@@ -545,10 +646,10 @@ function Home() {
               </TableContainer>
             </TabPanel>
 
-            <TabPanel 
-             display="flex"
-             justifyContent="center"
-             alignItems="center"
+            <TabPanel
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
             >
               <TableContainer>
                 <Table
@@ -566,10 +667,17 @@ function Home() {
                         id="espacio"
                         style={{ marginBottom: "3px !important" }}
                       >
-                        <Td fontSize="18px" style={{ color: "white" }}>Amount</Td>
+                        <Td fontSize="18px" style={{ color: "white" }}>
+                          Amount
+                        </Td>
                         <Td style={{ visibility: "hidden" }}>.</Td>
                       </Tr>
-                      <Td fontSize="18px" isNumeric textAlign="end" style={{ color: "white" }}>
+                      <Td
+                        fontSize="18px"
+                        isNumeric
+                        textAlign="end"
+                        style={{ color: "white" }}
+                      >
                         Available: {gVARAbalance} gVARA
                       </Td>
                     </Grid>
@@ -642,52 +750,71 @@ function Home() {
 
                     <Grid templateColumns="1fr auto" gap="4">
                       <Tr textColor="white">
-                        <Td fontSize="18px" style={{ color: "white" }}>Total Balance</Td>
+                        <Td fontSize="18px" style={{ color: "white" }}>
+                          Total Balance
+                        </Td>
                         <Td style={{ visibility: "hidden" }}>.</Td>
                       </Tr>
-                      <Td fontSize="18px" isNumeric textAlign="end" style={{ color: "white" }}>
+                      <Td
+                        fontSize="18px"
+                        isNumeric
+                        textAlign="end"
+                        style={{ color: "white" }}
+                      >
                         4.00%
                       </Td>
                     </Grid>
 
                     <Grid templateColumns="1fr auto" gap="4">
                       <Tr textColor="white">
-                        <Td fontSize="18px" style={{ color: "white" }}>Locked</Td>
+                        <Td fontSize="18px" style={{ color: "white" }}>
+                          Locked
+                        </Td>
                         <Td style={{ visibility: "hidden" }}>.</Td>
                       </Tr>
-                      <Td fontSize="18px" isNumeric textAlign="end" style={{ color: "white" }}>
+                      <Td
+                        fontSize="18px"
+                        isNumeric
+                        textAlign="end"
+                        style={{ color: "white" }}
+                      >
                         0.0%
                       </Td>
                     </Grid>
 
                     <Grid templateColumns="1fr auto" gap="4">
                       <Tr textColor="white">
-                        <Td fontSize="18px" style={{ color: "white" }}>Available</Td>
+                        <Td fontSize="18px" style={{ color: "white" }}>
+                          Available
+                        </Td>
                         <Td style={{ visibility: "hidden", color: "white" }}>
                           .
                         </Td>
                       </Tr>
-                      <Td fontSize="18px" isNumeric textAlign="end" style={{ color: "white" }}>
+                      <Td
+                        fontSize="18px"
+                        isNumeric
+                        textAlign="end"
+                        style={{ color: "white" }}
+                      >
                         10%
                       </Td>
                     </Grid>
 
-                      <Td
-                        width="100%" display="flex" justifyContent="center"
+                    <Td width="100%" display="flex" justifyContent="center">
+                      <Button
+                        colorScheme="teal"
+                        size="lg"
+                        style={{
+                          color: "black",
+                          background: "#F8AD18",
+                          width: "240px",
+                        }}
+                        onClick={() => signer(unstakemessage)}
                       >
-                        <Button
-                          colorScheme="teal"
-                          size="lg"
-                          style={{
-                            color: "black",
-                            background: "#F8AD18",
-                            width: "240px",
-                          }}
-                          onClick={() => signer(unstakemessage)}
-                        >
-                          Withdraw
-                        </Button>
-                      </Td>
+                        Withdraw
+                      </Button>
+                    </Td>
                   </Tbody>
                 </Table>
               </TableContainer>
