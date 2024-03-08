@@ -9,7 +9,7 @@ function HoverEffect() {
         position="relative"
         w="440px"
         h="440px"
-        src="http://guardiandefi.xyz/wp-content/uploads/2023/09/CoinGuardian.png"
+        src="https://github.com/Guardian-Protocol/imagenes_guardian_protocol/blob/main/src/CoinGuardian.png?raw=true"
       />
     </motion.div>
   );

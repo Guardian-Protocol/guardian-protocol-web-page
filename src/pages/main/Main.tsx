@@ -84,16 +84,16 @@ function Main() {
                     marginLeft="-400px"
                     w="70px"
                     h="70 px"
-                    src="http://guardiandefi.xyz/wp-content/uploads/2023/09/x-icon.png"
-                    transform="rotate(45deg)"
+                    src="https://github.com/Guardian-Protocol/imagenes_guardian_protocol/blob/main/src/CoinGuardian.png?raw=true"
+                    transform="rotate(-25deg)"
                   />
                   <HoverEffect/>
                   <Image
                     position="revert"
                     w="70px"
                     h="70 px"
-                    src="http://guardiandefi.xyz/wp-content/uploads/2023/09/x-icon.png"
-                    transform="rotate(45deg)"
+                    src="https://github.com/Guardian-Protocol/imagenes_guardian_protocol/blob/main/src/CoinGuardian.png?raw=true"
+                    transform="rotate(-45deg)"
                     marginLeft="400px"
                   />
                 </VStack>

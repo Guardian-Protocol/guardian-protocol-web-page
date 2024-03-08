@@ -46,7 +46,7 @@ function Section4() {
           <Image
             w="500px"
             h="500px"
-            src="http://guardiandefi.xyz/wp-content/uploads/2023/09/Guardian-Reward2.png"
+            src="https://github.com/Guardian-Protocol/imagenes_guardian_protocol/blob/main/src/Guardian-Reward2.png?raw=true"
           />
         </Flex>
       </HStack>

@@ -41,7 +41,7 @@ function Section2() {
           <Image
             w="380px"
             h="380px"
-            src="http://guardiandefi.xyz/wp-content/uploads/2023/09/CoinGuardian.png"
+            src="https://github.com/Guardian-Protocol/imagenes_guardian_protocol/blob/main/src/CoinGuardian.png?raw=true"
           />
           <HStack>
             <Box w="150px" />
