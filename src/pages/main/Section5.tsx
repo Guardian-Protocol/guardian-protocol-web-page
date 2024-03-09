@@ -76,11 +76,11 @@ function Section5() {
         <VStack alignItems="center" spacing={5}>
           <Heading size="lg" textColor="black">Supporters</Heading>
           <HStack justifyContent="center" spacing={2}>
-            <Image w="140px" h="140px"   src="http://guardiandefi.xyz/wp-content/uploads/2023/09/Cryptomx-Logo.png" />
+            <Image w="140px" h="140px"   src="https://github.com/Guardian-Protocol/imagenes_guardian_protocol/blob/main/src/Cryptomx-Logo.png?raw=true" />
             <Box w="15px"/>
-            <Image w="140px" h="140px" src="http://guardiandefi.xyz/wp-content/uploads/2023/09/Vara-Logo-1.png" />
+            <Image w="140px" h="140px" src="https://github.com/Guardian-Protocol/imagenes_guardian_protocol/blob/main/src/Vara-Logo.png?raw=true" />
             <Box w="15px"/>
-            <Image w="140px" h="140px" src="http://guardiandefi.xyz/wp-content/uploads/2023/09/maguey-studioLogo.png" />
+            <Image w="140px" h="140px" src="https://github.com/Guardian-Protocol/imagenes_guardian_protocol/blob/main/src/maguey-studioLogo.png?raw=true" />
           </HStack>
         </VStack>
       </Grid>

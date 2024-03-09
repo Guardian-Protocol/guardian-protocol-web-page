@@ -41,7 +41,7 @@ function Section3() {
             <Image
               w="180px"
               h="180px"
-              src="http://guardiandefi.xyz/wp-content/uploads/2023/09/vara-token.png"
+              src="https://github.com/Guardian-Protocol/imagenes_guardian_protocol/blob/main/src/CoinGuardian.png?raw=true"
             />
             <Heading size="lg"  textColor="black" fontWeight="normal">Stake $VARA <br /> tokens protocols</Heading>
           </HStack>
@@ -49,7 +49,7 @@ function Section3() {
             <Image
               w="180px"
               h="180px"
-              src="http://guardiandefi.xyz/wp-content/uploads/2023/09/gVara.png"
+              src="https://github.com/Guardian-Protocol/imagenes_guardian_protocol/blob/main/src/CoinGuardian.png?raw=true"
             />
             <Heading size="lg"  textColor="black" fontWeight="normal">Receive liquid <br /> $gVARA tokens </Heading>
           </HStack>
@@ -57,7 +57,7 @@ function Section3() {
             <Image
               w="180px"
               h="180px"
-              src="http://guardiandefi.xyz/wp-content/uploads/2023/09/Participate.png"
+              src="https://github.com/Guardian-Protocol/imagenes_guardian_protocol/blob/main/src/CoinGuardian.png?raw=true"
             />
             <Heading size="lg"  textColor="black" fontWeight="normal">Participate <br /> across DeFi </Heading>
           </HStack>
