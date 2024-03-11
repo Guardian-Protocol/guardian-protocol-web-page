@@ -2276,10 +2276,10 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
-"@gear-js/api@0.33.2":
-  version "0.33.2"
-  resolved "https://registry.npmjs.org/@gear-js/api/-/api-0.33.2.tgz"
-  integrity sha512-Cwf6GLtbQBmytjqLlke1uvQWInGLwOiNoGBJvry0pg1SgM/yLl1LfvChiF7/eS/5SWn+HCIvvYVLM7YoFHg4Bg==
+"@gear-js/api@0.36.7":
+  version "0.36.7"
+  resolved "https://registry.yarnpkg.com/@gear-js/api/-/api-0.36.7.tgz#23e484f636a06906865d7e4ffca8e68c9c9014fa"
+  integrity sha512-o0AxTAKJtoyh+Ii60CKuT0Q5wSKUeEiZXs/4nRJmeHxI+e/BTp6J+To790DunZSc3r3zA0G59Vc5tCagyVnWDQ==
 
 "@gear-js/react-hooks@0.6.4":
   version "0.6.4"

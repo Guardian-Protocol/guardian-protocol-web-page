@@ -13,10 +13,13 @@
   color: white;
 }
 
+.body {
+  color: white;
+}
+
 .tablist:active{
   background: yellow !important;
 }
-
 
 .table-content th, .table-content td {
   color: white;
