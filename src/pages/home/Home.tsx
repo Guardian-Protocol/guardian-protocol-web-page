@@ -170,7 +170,7 @@ function Home() {
   return (
     <GridItem
       w="100%"
-      h="100%"
+      h="90vh"
       style={{
         backgroundImage: `url(${XBackground})`,
         backgroundRepeat: "no-repeat",
