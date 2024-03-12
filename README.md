@@ -1,21 +1,6 @@
 # Guardian Protocol
 
-```mermaid
-sequenceDiagram
-    autonumber
-    User ->> Protocol: stakes VARA
-    Protocol -->> User: mints gVARA
-    Protocol ->> Validators: transfers VARA
-
-    loop Rewards
-        Validators -->> Protocol: generates reward
-        Protocol -->> User: transfers VARA (90% of reward)
-    end
-
-    User ->> Protocol: action Withdraw
-    Protocol ->> User: burns gVARA
-    Protocol ->> User: transfers VARA
-```
+![Untitled Diagram drawio](https://github.com/Guardian-Protocol/guardian-protocol-web-page/assets/62081821/94538d2d-1b4a-4ee7-bbc0-d970ffe3936a)
 
 ## Description
 
