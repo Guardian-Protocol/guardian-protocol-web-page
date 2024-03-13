@@ -38,7 +38,8 @@ function Home() {
   const [stakeamount, setStakeamount] = useState<any | undefined>(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [lockedBalance, setLockedBalance] = useState<any | undefined>(0);
-  const [isMessageSuccess, setIsMessageSuccess] = useState(true);
+  const [isMessageSuccess, setIsMessageSuccess] = useState(false);
+  const [isFirstRender, setIsFirstRender] = useState(true);
   const [metaSate, setMetaState] = useState<any>();
 
   const { api } = useApi();
@@ -50,6 +51,7 @@ function Home() {
   const extFactory = new ExtrinsicFactory(accounts, account, api);
   
   const stake = async () => {
+    setIsFirstRender(false);
     const mintMessageFactory = await extFactory.messageExtrinsic(stakemessage); 
     const injector = await web3FromSource(accounts[0].meta.source);
 
@@ -68,6 +70,7 @@ function Home() {
         } else if (status.isFinalized) {
           alert.success(status.type, { ...alertStyle });
           setIsMessageSuccess(true);
+          
         } 
       }
     )
@@ -88,7 +91,16 @@ function Home() {
   const closeModal = () => {
     setIsModalOpen(false);
   };
-  
+  const locked = () => {
+    getLockedBalance(buffer, api, metaSate, account).then((balance) => {
+      try {
+        setLockedBalance((balance.toJSON() as { [index: string]: any }).totalLocketBalance.total);
+        console.log("soy la funcion") //I don’t know why this breaks the code when it’s deleted
+      } catch {
+        setLockedBalance(0);
+      }
+    });
+  }
   useEffect(() => {
     document.documentElement.style.setProperty("--background-color", "#131111");
     if (buffer !== undefined) {
@@ -98,20 +110,17 @@ function Home() {
     }
   }, [buffer]);
 
-    
   useEffect(() => {
+    setIsFirstRender(true)
     if (buffer !== undefined && api && metaSate && isMessageSuccess) {
-      getLockedBalance(buffer, api, metaSate, account).then((balance) => {
-        try {
-          console.log((balance.toJSON() as { [index: string]: any }).totalLocketBalance.total);
-          setLockedBalance((balance.toJSON() as { [index: string]: any }).totalLocketBalance.total);
-        } catch {
-          setLockedBalance(0);
-        }
-      });
+      locked();
       setIsMessageSuccess(false);
     }
-  }, [account, buffer, api, metaSate, isMessageSuccess]);  
+    if (buffer !== undefined && api && metaSate && isFirstRender) {
+      locked();
+    }
+    
+  }, [account, buffer, api, metaSate, isMessageSuccess]);
 
   return (
     <GridItem
@@ -310,7 +319,7 @@ function Home() {
                         textAlign="end"
                         style={{ color: "white" }}
                       >
-                        { parseFloat(account?.balance.value as string) - lockedBalance }
+                        { parseFloat(account?.balance.value as string) + lockedBalance }
                       </Td>
                     </Grid>
 
