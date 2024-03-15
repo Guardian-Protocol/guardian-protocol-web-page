@@ -25,7 +25,7 @@ import {
 import { web3FromSource } from "@polkadot/extension-dapp";
 import { useApi, useAlert, useAccount } from "@gear-js/react-hooks";
 import { getStateMetadata } from "@gear-js/api";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { getLockedBalance } from "contract_utils/GetLockedBalance";
 import { ExtrinsicFactory } from "contract_utils/ExtrinsicFactory";
 import { useWasmMetadata } from "contract_utils/WasmMetadata";
@@ -38,12 +38,15 @@ function Home() {
   const [stakeamount, setStakeamount] = useState<any | undefined>(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [lockedBalance, setLockedBalance] = useState<any | undefined>(0);
-  const [isMessageSuccess, setIsMessageSuccess] = useState(true);
+  const [isMessageSuccess, setIsMessageSuccess] = useState(false);
+  const isFirstRender = useRef(false);
   const [metaSate, setMetaState] = useState<any>();
 
   const { api } = useApi();
-  const { buffer } = useWasmMetadata(stateWasm);  
+  const { buffer } = useWasmMetadata(stateWasm);
   const { accounts, account } = useAccount();
+
+  const prevAccount = useRef(account?.address);
 
   const alert = useAlert();
   const stakemessage = { stake: Math.floor(stakeamount) };
@@ -88,7 +91,7 @@ function Home() {
   const closeModal = () => {
     setIsModalOpen(false);
   };
-  
+
   useEffect(() => {
     document.documentElement.style.setProperty("--background-color", "#131111");
     if (buffer !== undefined) {
@@ -98,20 +101,36 @@ function Home() {
     }
   }, [buffer]);
 
-    
   useEffect(() => {
+    console.log(" la cuenta es: ", account)
     if (buffer !== undefined && api && metaSate && isMessageSuccess) {
       getLockedBalance(buffer, api, metaSate, account).then((balance) => {
         try {
-          console.log((balance.toJSON() as { [index: string]: any }).totalLocketBalance.total);
           setLockedBalance((balance.toJSON() as { [index: string]: any }).totalLocketBalance.total);
+          console.log("entre en isMessage")
         } catch {
           setLockedBalance(0);
         }
+        console.log("antes de renderizar nuevamente soy: ", isFirstRender.current)
+        setIsMessageSuccess(false);
       });
-      setIsMessageSuccess(false);
     }
-  }, [account, buffer, api, metaSate, isMessageSuccess]);  
+    if (buffer !== undefined && api && metaSate && !isFirstRender.current) {
+      getLockedBalance(buffer, api, metaSate, account).then((balance) => {
+        try {
+          setLockedBalance((balance.toJSON() as { [index: string]: any }).totalLocketBalance.total);
+          console.log("entre en firstRender porque su inversa es: ", !isFirstRender.current)
+        } catch {
+          setLockedBalance(0);
+        }
+        isFirstRender.current = !isFirstRender.current;
+      });
+    } else if (prevAccount.current !== account?.address) {
+      window.location.reload();
+    } else {
+      console.log("No paso porque isFirsRender es: ", isFirstRender.current)
+    }
+  }, [account, buffer, api, metaSate, isMessageSuccess]);
 
   return (
     <GridItem
@@ -310,7 +329,7 @@ function Home() {
                         textAlign="end"
                         style={{ color: "white" }}
                       >
-                        { parseFloat(account?.balance.value as string) - lockedBalance }
+                        { parseFloat(account?.balance.value as string) + lockedBalance }
                       </Td>
                     </Grid>
 
