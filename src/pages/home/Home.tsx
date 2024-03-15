@@ -25,7 +25,7 @@ import {
 import { web3FromSource } from "@polkadot/extension-dapp";
 import { useApi, useAlert, useAccount } from "@gear-js/react-hooks";
 import { getStateMetadata } from "@gear-js/api";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { getLockedBalance } from "contract_utils/GetLockedBalance";
 import { ExtrinsicFactory } from "contract_utils/ExtrinsicFactory";
 import { useWasmMetadata } from "contract_utils/WasmMetadata";
@@ -39,19 +39,20 @@ function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [lockedBalance, setLockedBalance] = useState<any | undefined>(0);
   const [isMessageSuccess, setIsMessageSuccess] = useState(false);
-  const [isFirstRender, setIsFirstRender] = useState(true);
+  const isFirstRender = useRef(false);
   const [metaSate, setMetaState] = useState<any>();
 
   const { api } = useApi();
-  const { buffer } = useWasmMetadata(stateWasm);  
+  const { buffer } = useWasmMetadata(stateWasm);
   const { accounts, account } = useAccount();
+
+  const prevAccount = useRef(account?.address);
 
   const alert = useAlert();
   const stakemessage = { stake: Math.floor(stakeamount) };
   const extFactory = new ExtrinsicFactory(accounts, account, api);
   
   const stake = async () => {
-    setIsFirstRender(false);
     const mintMessageFactory = await extFactory.messageExtrinsic(stakemessage); 
     const injector = await web3FromSource(accounts[0].meta.source);
 
@@ -70,7 +71,6 @@ function Home() {
         } else if (status.isFinalized) {
           alert.success(status.type, { ...alertStyle });
           setIsMessageSuccess(true);
-          
         } 
       }
     )
@@ -91,16 +91,7 @@ function Home() {
   const closeModal = () => {
     setIsModalOpen(false);
   };
-  const locked = () => {
-    getLockedBalance(buffer, api, metaSate, account).then((balance) => {
-      try {
-        setLockedBalance((balance.toJSON() as { [index: string]: any }).totalLocketBalance.total);
-        console.log("soy la funcion") //I don’t know why this breaks the code when it’s deleted
-      } catch {
-        setLockedBalance(0);
-      }
-    });
-  }
+
   useEffect(() => {
     document.documentElement.style.setProperty("--background-color", "#131111");
     if (buffer !== undefined) {
@@ -111,15 +102,34 @@ function Home() {
   }, [buffer]);
 
   useEffect(() => {
-    setIsFirstRender(true)
+    console.log(" la cuenta es: ", account)
     if (buffer !== undefined && api && metaSate && isMessageSuccess) {
-      locked();
-      setIsMessageSuccess(false);
+      getLockedBalance(buffer, api, metaSate, account).then((balance) => {
+        try {
+          setLockedBalance((balance.toJSON() as { [index: string]: any }).totalLocketBalance.total);
+          console.log("entre en isMessage")
+        } catch {
+          setLockedBalance(0);
+        }
+        console.log("antes de renderizar nuevamente soy: ", isFirstRender.current)
+        setIsMessageSuccess(false);
+      });
     }
-    if (buffer !== undefined && api && metaSate && isFirstRender) {
-      locked();
+    if (buffer !== undefined && api && metaSate && !isFirstRender.current) {
+      getLockedBalance(buffer, api, metaSate, account).then((balance) => {
+        try {
+          setLockedBalance((balance.toJSON() as { [index: string]: any }).totalLocketBalance.total);
+          console.log("entre en firstRender porque su inversa es: ", !isFirstRender.current)
+        } catch {
+          setLockedBalance(0);
+        }
+        isFirstRender.current = !isFirstRender.current;
+      });
+    } else if (prevAccount.current !== account?.address) {
+      window.location.reload();
+    } else {
+      console.log("No paso porque isFirsRender es: ", isFirstRender.current)
     }
-    
   }, [account, buffer, api, metaSate, isMessageSuccess]);
 
   return (
