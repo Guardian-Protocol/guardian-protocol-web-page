@@ -7,6 +7,7 @@ import {
 import { Stake } from "./Stake";
 import { Withdraw } from "./Withdraw";
 import { Unstake } from "./Unstake";
+import { History } from "./History";
 
 
 
@@ -73,6 +74,18 @@ function TabListStaking({
         </Tab>
         <Tab
           _selected={{ bg: "#F8AD18", color: "black" }}
+          borderBottom="3px solid #F8AD18"
+          borderRight="3px solid #F8AD18"
+          borderLeft="3px solid #F8AD18"
+          borderRadius="0"
+          color="white"
+          backgroundColor="black"
+          fontSize="18px"
+        >
+          Withdraw
+        </Tab>
+        <Tab
+          _selected={{ bg: "#F8AD18", color: "black" }}
           borderBottom="3px solid #F8AD18 "
           borderTopLeftRadius="0px"
           borderTopRightRadius="24px"
@@ -80,7 +93,7 @@ function TabListStaking({
           backgroundColor="black"
           fontSize="18px"
         >
-          Withdraw
+          History
         </Tab>
       </TabList>
 
@@ -88,6 +101,7 @@ function TabListStaking({
         <Stake stakeamount={stakeamount} account={account} lockedBalance={lockedBalance} isModalOpen={isModalOpen} AmountInputChange={AmountInputChange} setStakeamount={setStakeamount} maxamountvara={maxamountvara} stake={stake} openModal={openModal} closeModal={closeModal} accounts={accounts} />
         <Unstake stakeamount={stakeamount} AmountInputChange={AmountInputChange} setStakeamount={setStakeamount} maxamountvara={maxamountvara} />
         <Withdraw stakeamount={stakeamount} AmountInputChange={AmountInputChange} setStakeamount={setStakeamount} maxamountvara={maxamountvara} />
+        <History />
       </TabPanels>
 
     </Tabs>
