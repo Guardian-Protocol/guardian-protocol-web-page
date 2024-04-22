@@ -16,17 +16,27 @@ import {
     Grid,
 
 } from "@chakra-ui/react";
+import { AccountsModal } from "components/layout/header/account/accounts-modal";
 import VaraLogo from "../../assets/images/VaraLogo.png";
 
 
+
 type UnstakeProps = {
-    stakeamount: any;
-    AmountInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    setStakeamount: React.Dispatch<React.SetStateAction<any>>;
-    maxamountvara: () => void;
+    account: any;
+    lockedBalance: any;
+    isModalOpen: boolean;
+    AmountInputChangeUnstake: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    maxamountvaraUnstake: () => void;
+    openModal: () => void;
+    closeModal: () => void;
+    accounts: any;
+
+    unstakeamount: any;
+    setUnstakeamount: React.Dispatch<React.SetStateAction<any>>;
+    unstake: () => void;
 };
 
-function Unstake({stakeamount, AmountInputChange, setStakeamount, maxamountvara,}: UnstakeProps) {
+function Unstake({ unstakeamount, AmountInputChangeUnstake, setUnstakeamount, maxamountvaraUnstake, openModal, closeModal, account, accounts, lockedBalance, isModalOpen, unstake }: UnstakeProps) {
 
     return (
         <TabPanel
@@ -61,7 +71,7 @@ function Unstake({stakeamount, AmountInputChange, setStakeamount, maxamountvara,
                                 textAlign="end"
                                 style={{ color: "white" }}
                             >
-                                Available: gVARA
+                                Available: {account?.balance.value} gVARA
                             </Td>
                         </Grid>
 
@@ -94,19 +104,19 @@ function Unstake({stakeamount, AmountInputChange, setStakeamount, maxamountvara,
                                         _hover={{
                                             borderColor: "#F8AD18",
                                         }}
-                                        value={stakeamount}
+                                        value={unstakeamount}
                                         onChange={(event) => {
                                             const { value } = event.target;
                                             if (!Number.isNaN(Number(value))) {
-                                                AmountInputChange(event);
+                                                AmountInputChangeUnstake(event);
                                             }
                                         }}
                                         borderWidth="3px"
                                         display="flex"
                                         alignContent="center"
                                         onClick={() => {
-                                            if (stakeamount === "0") {
-                                                setStakeamount("");
+                                            if (unstakeamount === "0") {
+                                                setUnstakeamount("");
                                             }
                                         }}
                                     />
@@ -117,7 +127,7 @@ function Unstake({stakeamount, AmountInputChange, setStakeamount, maxamountvara,
                                         <Button
                                             h="60px"
                                             size="lg"
-                                            onClick={maxamountvara}
+                                            onClick={maxamountvaraUnstake}
                                             backgroundColor="transparent"
                                             color="white"
                                             _hover={{
@@ -151,7 +161,7 @@ function Unstake({stakeamount, AmountInputChange, setStakeamount, maxamountvara,
                                 style={{ color: "white" }}
                                 fontSize="18px"
                             >
-                                {stakeamount} VARA
+                                {unstakeamount} VARA
                             </Td>
                         </Grid>
 
@@ -193,7 +203,7 @@ function Unstake({stakeamount, AmountInputChange, setStakeamount, maxamountvara,
                                 textAlign="end"
                                 style={{ color: "white" }}
                             >
-                                0.0%
+                                {lockedBalance}
                             </Td>
                         </Grid>
 
@@ -215,18 +225,34 @@ function Unstake({stakeamount, AmountInputChange, setStakeamount, maxamountvara,
                         </Grid>
 
                         <Td width="100%" display="flex" justifyContent="center">
-                            <Button
-                                colorScheme="teal"
-                                size="lg"
-                                style={{
-                                    color: "black",
-                                    background: "#F8AD18",
-                                    width: "240px",
-                                }}
-                                onClick={() => { }}
-                            >
-                                Unstake
-                            </Button>
+                        {account ? (
+                                <Button
+                                    colorScheme="teal"
+                                    size="lg"
+                                    style={{
+                                        color: "black",
+                                        background: "#F8AD18",
+                                        width: "240px",
+                                    }}
+                                    onClick={unstake}
+                                >
+                                    Unstake
+                                </Button>
+                            ) : (
+                                <Button
+                                    colorScheme="teal"
+                                    size="lg"
+                                    style={{
+                                        color: "black",
+                                        background: "#F8AD18",
+                                        width: "240px",
+                                    }}
+                                    onClick={openModal}
+                                >
+                                    Connect Wallet
+                                </Button>
+                            )}
+                            {isModalOpen && <AccountsModal accounts={accounts} close={closeModal} />}
                         </Td>
                     </Tbody>
                 </Table>

@@ -12,60 +12,68 @@ import VaraLogo from "../../assets/images/VaraLogo.png";
 
 
 type WithdrawProps = {
-  stakeamount: any;
-
-  AmountInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  setStakeamount: React.Dispatch<React.SetStateAction<any>>;
-  maxamountvara: () => void;
-
+  unestakeHistory: any[][];
 };
 
-function Withdraw({ stakeamount, AmountInputChange, setStakeamount, maxamountvara, }: WithdrawProps) {
+function Withdraw({ unestakeHistory }: WithdrawProps) {
+
+
 
   return (
     <TabPanel
       display="flex"
       justifyContent="center"
       alignItems="center"
-    >
-
-      <Box borderWidth="3px" borderRadius="lg" overflow="hidden" w="100%" borderColor="#F8AD18" bg="#131111">
-        <Flex justify="space-between" p={5} align="center" w="100%">
-        <Flex align="center" w="70%" justify="space-between">
-        <Flex direction="column" justify="space-between">
-            <Flex align="center">
-              <Text fontSize="lg" fontWeight="bold">Request Amount</Text>
+    > 
+    <Flex direction="column" w="100%">
+    {unestakeHistory.map((history, index) => (
+        <Box
+          key={index}
+          borderWidth="3px"
+          borderRadius="lg"
+          overflow="hidden"
+          w="100%"
+          borderColor="#F8AD18"
+          bg="#131111"
+          mt={index > 0 ? 4 : 0}
+        >
+          <Flex justify="space-between" p={5} align="center" w="100%">
+            <Flex align="center" w="70%" justify="space-between">
+              <Flex direction="column" justify="space-between">
+                <Flex align="center">
+                  <Text fontSize="lg" fontWeight="bold">Request Amount</Text>
+                </Flex>
+                <Flex align="center">
+                  <Text fontSize="lg" fontWeight="bold">Remaining Eras </Text>
+                </Flex>
+              </Flex>
+              <Flex direction="column" alignItems="flex-end">
+                <Flex align="center">
+                  <Text fontSize="lg" fontWeight="bold">{history[1]?.amount}</Text>
+                  <Image src={VaraLogo} boxSize="40px" ml={2} />
+                </Flex>
+                <Flex align="center">
+                  <Text fontSize="lg" fontWeight="bold">{history[1]?.liberationEra}</Text>
+                  <Text ml={4} fontSize="lg" fontWeight="bold">Eras</Text>
+                </Flex>
+              </Flex>
             </Flex>
-            <Flex align="center">
-              <Text fontSize="lg" fontWeight="bold">Remaining Eras </Text>
-            </Flex>
+            <Button
+              colorScheme="teal"
+              size="lg"
+              style={{
+                color: "black",
+                background: "#F8AD18",
+                width: "140px",
+              }}
+            >
+              Claim
+            </Button>
           </Flex>
-          <Flex direction="column" alignItems="flex-end">
-            <Flex align="center">
-              <Text fontSize="lg" fontWeight="bold">4.00032</Text>
-              <Image src={VaraLogo} boxSize="40px" ml={2}/>
-
-            </Flex>
-            <Flex align="center">
-              <Text fontSize="lg" fontWeight="bold">10 </Text>
-              <Text ml={4} fontSize="lg" fontWeight="bold">Eras</Text>
-            </Flex>
-          </Flex>
-</Flex>
-          
-          <Button
-            colorScheme="teal"
-            size="lg"
-            style={{
-              color: "black",
-              background: "#F8AD18",
-              width: "140px",
-            }}
-          >
-            Claim
-          </Button>
-        </Flex>
-      </Box>
+        </Box>
+      ))}
+    </Flex>
+      
     </TabPanel>
   )
 }
