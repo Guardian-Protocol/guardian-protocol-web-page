@@ -34,11 +34,11 @@ type StakeProps = {
     accounts: any;
 };
 
-function Stake({ 
-    stakeamount, 
-    account, 
-    lockedBalance, 
-    isModalOpen, 
+function Stake({
+    stakeamount,
+    account,
+    lockedBalance,
+    isModalOpen,
     AmountInputChange,
     setStakeamount,
     maxamountvara,

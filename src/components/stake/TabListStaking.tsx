@@ -13,17 +13,26 @@ import { History } from "./History";
 
 
 type TabListStakingProps = {
-  stakeamount: any;
   account: any;
   lockedBalance: any;
   isModalOpen: boolean;
-  AmountInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  setStakeamount: React.Dispatch<React.SetStateAction<any>>;
-  maxamountvara: () => void;
-  stake: () => void;
   openModal: () => void;
   closeModal: () => void;
   accounts: any;
+  
+  stakeamount: any;
+  setStakeamount: React.Dispatch<React.SetStateAction<any>>;
+  stake: () => void;
+  AmountInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  maxamountvara: () => void;
+
+  unstakeamount: any;
+  setUnstakeamount: React.Dispatch<React.SetStateAction<any>>;
+  unstake: () => void;
+  maxamountvaraUnstake: () => void;
+  AmountInputChangeUnstake : (event: React.ChangeEvent<HTMLInputElement>) => void;
+
+  unestakeHistory: any[][];
 };
 
 function TabListStaking({
@@ -37,7 +46,10 @@ function TabListStaking({
   stake,
   openModal,
   closeModal,
-  accounts }: TabListStakingProps) {
+  accounts,
+  unstakeamount,
+  setUnstakeamount,
+  unstake, maxamountvaraUnstake, AmountInputChangeUnstake, unestakeHistory}: TabListStakingProps) {
     const [tabIndex, setTabIndex] = useState(0);
 
 
@@ -111,9 +123,11 @@ function TabListStaking({
 
       <TabPanels>
         <Stake stakeamount={stakeamount} account={account} lockedBalance={lockedBalance} isModalOpen={isModalOpen} AmountInputChange={AmountInputChange} setStakeamount={setStakeamount} maxamountvara={maxamountvara} stake={stake} openModal={openModal} closeModal={closeModal} accounts={accounts} />
-        <Unstake account={account} lockedBalance={lockedBalance} stakeamount={stakeamount} AmountInputChange={AmountInputChange} setStakeamount={setStakeamount} maxamountvara={maxamountvara} />
-        <Withdraw stakeamount={stakeamount} AmountInputChange={AmountInputChange} setStakeamount={setStakeamount} maxamountvara={maxamountvara} />
-        <History />
+
+        <Unstake account={account} lockedBalance={lockedBalance} isModalOpen={isModalOpen} maxamountvaraUnstake={maxamountvaraUnstake} AmountInputChangeUnstake={AmountInputChangeUnstake} openModal={openModal} closeModal={closeModal} accounts={accounts} unstakeamount={unstakeamount} setUnstakeamount={setUnstakeamount} unstake={unstake} />
+
+        <Withdraw unestakeHistory={unestakeHistory}/>
+        <History unestakeHistory={unestakeHistory}/>
       </TabPanels>
 
     </Tabs>
