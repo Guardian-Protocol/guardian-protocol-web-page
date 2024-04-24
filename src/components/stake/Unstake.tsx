@@ -21,12 +21,14 @@ import VaraLogo from "../../assets/images/VaraLogo.png";
 
 type UnstakeProps = {
     stakeamount: any;
+    account: any;
+    lockedBalance: any;
     AmountInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
     setStakeamount: React.Dispatch<React.SetStateAction<any>>;
     maxamountvara: () => void;
 };
 
-function Unstake({stakeamount, AmountInputChange, setStakeamount, maxamountvara,}: UnstakeProps) {
+function Unstake({stakeamount, AmountInputChange, setStakeamount, maxamountvara, account, lockedBalance}: UnstakeProps) {
 
     return (
         <TabPanel
@@ -176,7 +178,7 @@ function Unstake({stakeamount, AmountInputChange, setStakeamount, maxamountvara,
                                 textAlign="end"
                                 style={{ color: "white" }}
                             >
-                                4.00%
+                                {parseFloat(account?.balance.value as string) + lockedBalance}
                             </Td>
                         </Grid>
 
@@ -193,7 +195,7 @@ function Unstake({stakeamount, AmountInputChange, setStakeamount, maxamountvara,
                                 textAlign="end"
                                 style={{ color: "white" }}
                             >
-                                0.0%
+                                {lockedBalance}
                             </Td>
                         </Grid>
 
@@ -210,7 +212,7 @@ function Unstake({stakeamount, AmountInputChange, setStakeamount, maxamountvara,
                                 textAlign="end"
                                 style={{ color: "white" }}
                             >
-                                10%
+                                {account?.balance.value}
                             </Td>
                         </Grid>
 
