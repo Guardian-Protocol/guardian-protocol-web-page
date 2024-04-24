@@ -4,6 +4,7 @@ import {
   TabPanels,
   Tab,
 } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 import { Stake } from "./Stake";
 import { Withdraw } from "./Withdraw";
 import { Unstake } from "./Unstake";
@@ -37,6 +38,16 @@ function TabListStaking({
   openModal,
   closeModal,
   accounts }: TabListStakingProps) {
+    const [tabIndex, setTabIndex] = useState(0);
+
+
+    useEffect(() => {
+      console.log(`Se seleccionó la pestaña ${tabIndex}`);
+    }, [tabIndex, account, lockedBalance, stakeamount, isModalOpen, accounts]); 
+  
+    const handleTabChange = (index: any) => {
+      setTabIndex(index);
+    };
 
   return (
     <Tabs
@@ -47,6 +58,7 @@ function TabListStaking({
       h="490px"
       backgroundColor="black"
       borderRadius="30px"
+      onChange={handleTabChange}
     >
       <TabList mb="1em" h="60px">
         <Tab
@@ -99,7 +111,7 @@ function TabListStaking({
 
       <TabPanels>
         <Stake stakeamount={stakeamount} account={account} lockedBalance={lockedBalance} isModalOpen={isModalOpen} AmountInputChange={AmountInputChange} setStakeamount={setStakeamount} maxamountvara={maxamountvara} stake={stake} openModal={openModal} closeModal={closeModal} accounts={accounts} />
-        <Unstake stakeamount={stakeamount} AmountInputChange={AmountInputChange} setStakeamount={setStakeamount} maxamountvara={maxamountvara} />
+        <Unstake account={account} lockedBalance={lockedBalance} stakeamount={stakeamount} AmountInputChange={AmountInputChange} setStakeamount={setStakeamount} maxamountvara={maxamountvara} />
         <Withdraw stakeamount={stakeamount} AmountInputChange={AmountInputChange} setStakeamount={setStakeamount} maxamountvara={maxamountvara} />
         <History />
       </TabPanels>
