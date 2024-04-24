@@ -19,7 +19,7 @@ type TabListStakingProps = {
   openModal: () => void;
   closeModal: () => void;
   accounts: any;
-  
+
   stakeamount: any;
   setStakeamount: React.Dispatch<React.SetStateAction<any>>;
   stake: () => void;
@@ -30,9 +30,10 @@ type TabListStakingProps = {
   setUnstakeamount: React.Dispatch<React.SetStateAction<any>>;
   unstake: () => void;
   maxamountvaraUnstake: () => void;
-  AmountInputChangeUnstake : (event: React.ChangeEvent<HTMLInputElement>) => void;
+  AmountInputChangeUnstake: (event: React.ChangeEvent<HTMLInputElement>) => void;
 
   unestakeHistory: any[][];
+  transactionHistory: any[];
 };
 
 function TabListStaking({
@@ -49,17 +50,17 @@ function TabListStaking({
   accounts,
   unstakeamount,
   setUnstakeamount,
-  unstake, maxamountvaraUnstake, AmountInputChangeUnstake, unestakeHistory}: TabListStakingProps) {
-    const [tabIndex, setTabIndex] = useState(0);
+  unstake, maxamountvaraUnstake, AmountInputChangeUnstake, unestakeHistory, transactionHistory, }: TabListStakingProps) {
+  const [tabIndex, setTabIndex] = useState(0);
 
 
-    useEffect(() => {
-      console.log(`Se seleccionó la pestaña ${tabIndex}`);
-    }, [tabIndex, account, lockedBalance, stakeamount, isModalOpen, accounts]); 
-  
-    const handleTabChange = (index: any) => {
-      setTabIndex(index);
-    };
+  useEffect(() => {
+    console.log(`Se seleccionó la pestaña ${tabIndex}`);
+  }, [tabIndex, account, lockedBalance, stakeamount, isModalOpen, accounts]);
+
+  const handleTabChange = (index: any) => {
+    setTabIndex(index);
+  };
 
   return (
     <Tabs
@@ -126,8 +127,8 @@ function TabListStaking({
 
         <Unstake account={account} lockedBalance={lockedBalance} isModalOpen={isModalOpen} maxamountvaraUnstake={maxamountvaraUnstake} AmountInputChangeUnstake={AmountInputChangeUnstake} openModal={openModal} closeModal={closeModal} accounts={accounts} unstakeamount={unstakeamount} setUnstakeamount={setUnstakeamount} unstake={unstake} />
 
-        <Withdraw unestakeHistory={unestakeHistory}/>
-        <History unestakeHistory={unestakeHistory}/>
+        <Withdraw unestakeHistory={unestakeHistory} />
+        <History transactionHistory={transactionHistory} />
       </TabPanels>
 
     </Tabs>

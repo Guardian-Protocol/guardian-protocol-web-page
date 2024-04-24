@@ -17,7 +17,17 @@ type WithdrawProps = {
 
 function Withdraw({ unestakeHistory }: WithdrawProps) {
 
-
+  if (unestakeHistory[0][1]?.liberationEra === "0") {
+    return (
+      <TabPanel
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Text fontSize="lg" fontWeight="bold">You have no Unestakes made</Text>
+      </TabPanel>
+    );
+}
 
   return (
     <TabPanel
@@ -28,7 +38,7 @@ function Withdraw({ unestakeHistory }: WithdrawProps) {
     <Flex direction="column" w="100%">
     {unestakeHistory.map((history, index) => (
         <Box
-          key={index}
+          key={history[0]} 
           borderWidth="3px"
           borderRadius="lg"
           overflow="hidden"
