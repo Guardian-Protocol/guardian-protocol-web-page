@@ -67,10 +67,10 @@ function TabListStaking({
       variant="enclosed"
       style={{ color: "white", border: "4px solid #F8AD18" }}
       w="800px"
-      h="490px"
       backgroundColor="black"
       borderRadius="30px"
       onChange={handleTabChange}
+      minHeight="490px"
     >
       <TabList mb="1em" h="60px">
         <Tab

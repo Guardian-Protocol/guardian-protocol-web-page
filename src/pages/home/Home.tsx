@@ -194,12 +194,12 @@ function Home() {
   return (
     <GridItem
       w="100%"
-      h="90vh"
+      minH="90vh"
       style={{
         backgroundImage: `url(${XBackground})`,
         backgroundRepeat: "no-repeat",
-        backgroundSize: "120%", // Ajusta este valor según sea necesario
-        backgroundPosition: "50% 80%", // Ajusta estos valores según sea necesario
+        backgroundSize: "cover", // Ajusta este valor según sea necesario
+        backgroundPosition: "center", // Ajusta estos valores según sea necesario
       }}
     >
       <Box h="90px" />
@@ -227,7 +227,7 @@ function Home() {
           unestakeHistory={history.unestakeHistory}
         />
       </Center>
-      <Box h="60px" />
+      <Box h="90px" />
     </GridItem>
   );
 }

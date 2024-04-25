@@ -14,10 +14,13 @@ import {
     Image,
     Text,
     Grid,
+    Flex,
+    Box,
 
 } from "@chakra-ui/react";
 import { AccountsModal } from "components/layout/header/account/accounts-modal";
 import VaraLogo from "../../assets/images/VaraLogo.png";
+import Advertencia from '../../assets/images/icons/advertencia.svg';
 
 
 
@@ -224,9 +227,26 @@ function Unstake({ unstakeamount, AmountInputChangeUnstake, setUnstakeamount, ma
                                 {account?.balance.value}
                             </Td>
                         </Grid>
+                        <TabPanel
+                            display="flex"
+                            justifyContent="center"
+                            alignItems="center"
+                        >
+                            <Flex direction="column" w="100%">
+                                <Box borderWidth="3px" borderRadius="lg" overflow="hidden" w="100%" borderColor="#F8AD18" bg="#131111" mt='5'>
+                                    <Flex justify="space-between" p={5} align="center" w="100%">
+                                        <Flex align="center" justifyContent="center" >
+                                            <Image src={Advertencia} boxSize="45px" mr={6} />
 
+                                            <Text fontSize="md  ">Unstake g varas will take 14 Eras that are (6 - 7 days) until you can withdraw tokens.</Text>
+
+                                        </Flex>
+                                    </Flex>
+                                </Box>
+                            </Flex>
+                        </TabPanel>
                         <Td width="100%" display="flex" justifyContent="center">
-                        {account ? (
+                            {account ? (
                                 <Button
                                     colorScheme="teal"
                                     size="lg"
