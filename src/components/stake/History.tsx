@@ -10,10 +10,22 @@ import {
 import VaraLogo from "../../assets/images/VaraLogo.png";
 
 type HistoryProps = {
-    unestakeHistory: any[][];
+    transactionHistory: any[];
 };
 
-function History({ unestakeHistory }: HistoryProps) {
+function History({transactionHistory}: HistoryProps) {
+
+    if (transactionHistory[0]?.transactionAmount === "0") {
+        return (
+          <TabPanel
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Text fontSize="lg" fontWeight="bold">You have no transaction history</Text>
+          </TabPanel>
+        );
+    }
 
     return (
         <TabPanel
@@ -22,8 +34,8 @@ function History({ unestakeHistory }: HistoryProps) {
             alignItems="center"
         >
             <Flex direction="column" w="100%">
-                {unestakeHistory.map((history, index) => (
-                    <Box key={index} borderWidth="3px" borderRadius="lg" overflow="hidden" w="100%" borderColor="#F8AD18" bg="#131111" mt={index > 0 ? 4 : 0}>
+                {transactionHistory.map((history, index) => (
+                    <Box key={history.transactionTime} borderWidth="3px" borderRadius="lg" overflow="hidden" w="100%" borderColor="#F8AD18" bg="#131111" mt={index > 0 ? 4 : 0}>
                         <Flex justify="space-between" p={5} align="center" w="100%">
                             <Flex align="center" w="70%" justify="space-between">
                                 <Flex direction="column" justify="space-between">
@@ -33,7 +45,7 @@ function History({ unestakeHistory }: HistoryProps) {
                                 </Flex>
                                 <Flex direction="column" alignItems="flex-end">
                                     <Flex align="center">
-                                        <Text fontSize="lg" fontWeight="bold">{history[1]?.amount}</Text>
+                                        <Text fontSize="lg" fontWeight="bold">{history.transactionAmount}</Text>
                                         <Image src={VaraLogo} boxSize="40px" ml={2} />
 
                                     </Flex>
@@ -41,7 +53,7 @@ function History({ unestakeHistory }: HistoryProps) {
 
                             </Flex>
                             <Flex align="center" w="30%" justifyContent="center">
-                                <Text fontSize="lg" fontWeight="bold">Unstake</Text>
+                                <Text fontSize="lg" fontWeight="bold">{history.transactionType}</Text>
                             </Flex>
                         </Flex>
                     </Box>

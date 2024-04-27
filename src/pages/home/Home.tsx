@@ -2,7 +2,7 @@ import { GridItem, Center, Box } from "@chakra-ui/react";
 import { web3FromSource } from "@polkadot/extension-dapp";
 import { useApi, useAlert, useAccount } from "@gear-js/react-hooks";
 import { getStateMetadata } from "@gear-js/api";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { getLockedBalance } from "contract_utils/GetLockedBalance";
 import { ExtrinsicFactory } from "contract_utils/ExtrinsicFactory";
 import { useWasmMetadata } from "contract_utils/WasmMetadata";
@@ -13,6 +13,7 @@ import XBackground from "../../assets/images/XBackground.svg";
 interface ContractState {
   unestakeHistory: any[][];
   userTotalVaraStaked: string;
+  transactionHistory: any[];
 }
 
 function Home() {
@@ -24,16 +25,24 @@ function Home() {
   const [metaSate, setMetaState] = useState<any>();
   const [history, setHistory] = useState<ContractState>({
     unestakeHistory: [
-            [
-                "0",
-                {
-                    amount: "88",
-                    liberationEra: "438",
-                    liberationDays: "7"
-                }
-            ]
-          ],
-    userTotalVaraStaked: "0"
+      [
+        "0",
+        {
+          amount: "88",
+          liberationEra: "0",
+          liberationDays: "7"
+        }
+      ]
+    ],
+    userTotalVaraStaked: "0",
+    transactionHistory: [
+      {
+        transactionId: "0",
+        transactionType: "stake",
+        transactionAmount: "0",
+        transactionTime: "1,713,922,548,000"
+      }
+    ],
   });
 
   const { api } = useApi();
@@ -44,17 +53,21 @@ function Home() {
 
   const alert = useAlert();
   const stakemessage = { stake: Math.floor(stakeamount) };
+
   const extFactory = new ExtrinsicFactory(accounts, account, api);
 
-  async function fetchHistory() {
+  const { getHistory } = extFactory;
+
+
+  const fetchHistory = useCallback(async () => {
     try {
-      const history = await extFactory.getHistory();
-      setHistory(history);
+      const historyData = await getHistory();
+      setHistory(historyData);
     } catch (error) {
       console.error("Ocurrió un error al obtener el historial:", error);
-      throw error; 
+      throw error;
     }
-  }
+  }, [getHistory]);
 
   const stake = async () => {
     const mintMessageFactory = await extFactory.messageExtrinsic(stakemessage, stakemessage.stake);
@@ -97,14 +110,17 @@ function Home() {
   };
 
   useEffect(() => {
+    fetchHistory();
+    setLockedBalance(history.userTotalVaraStaked);
+  }, [fetchHistory, history.userTotalVaraStaked]);
+
+  useEffect(() => {
     document.documentElement.style.setProperty("--background-color", "#131111");
     if (buffer !== undefined) {
       getStateMetadata(buffer as Buffer).then((meta) => {
         setMetaState(meta);
       });
     }
-    fetchHistory()
-    setLockedBalance(history.userTotalVaraStaked)
   }, [buffer]);
 
   console.log(history);
@@ -177,11 +193,11 @@ function Home() {
           unStakeMessageFactory?.signAndSend(
             account?.address ?? alert.error("No account found"),
             { signer: injector.signer },
-            ({ status }) => {
-              if (status.isInBlock) {
-                alert.success(status.asInBlock.toHuman()?.toString(), { ...alertStyle });
-              } else if (status.isFinalized) {
-                alert.success(status.type, { ...alertStyle });
+            ({ status: innerStatus }) => {
+              if (innerStatus.isInBlock) {
+                alert.success(innerStatus.asInBlock.toHuman()?.toString(), { ...alertStyle });
+              } else if (innerStatus.isFinalized) {
+                alert.success(innerStatus.type, { ...alertStyle });
                 setIsMessageSuccess(true);
               }
             }
@@ -223,8 +239,9 @@ function Home() {
           unstake={unstake}
           maxamountvaraUnstake={maxamountvaraUnstake}
           AmountInputChangeUnstake={AmountInputChangeUnstake}
-          
+
           unestakeHistory={history.unestakeHistory}
+          transactionHistory={history.transactionHistory}
         />
       </Center>
       <Box h="90px" />
