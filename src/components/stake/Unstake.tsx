@@ -37,9 +37,12 @@ type UnstakeProps = {
     unstakeamount: any;
     setUnstakeamount: React.Dispatch<React.SetStateAction<any>>;
     unstake: () => void;
+    unstakeGas: any;
+    setUnstakeGas: React.Dispatch<React.SetStateAction<any>>;
+
 };
 
-function Unstake({ unstakeamount, AmountInputChangeUnstake, setUnstakeamount, maxamountvaraUnstake, openModal, closeModal, account, accounts, lockedBalance, isModalOpen, unstake }: UnstakeProps) {
+function Unstake({ unstakeamount, AmountInputChangeUnstake, setUnstakeamount, maxamountvaraUnstake, openModal, closeModal, account, accounts, lockedBalance, isModalOpen, unstake, unstakeGas, setUnstakeGas }: UnstakeProps) {
 
     return (
         <TabPanel
@@ -144,6 +147,15 @@ function Unstake({ unstakeamount, AmountInputChangeUnstake, setUnstakeamount, ma
                             </Td>
                         </Grid>
 
+                        <Grid templateColumns="1fr auto" gap="1">
+                            <Td isNumeric color="white" fontSize="md">
+                                <Flex align="center" justifyContent="flex-end">
+                                    <Image src={Advertencia} boxSize="30px" mr={2} />
+                                    <Text>The cost of the Gas will be {String(unstakeGas)} VARA currently</Text>
+                                </Flex>
+                            </Td>
+                        </Grid>
+
                         <Grid templateColumns="1fr auto" gap="4">
                             <Tr textColor="white">
                                 <Td
@@ -238,7 +250,7 @@ function Unstake({ unstakeamount, AmountInputChangeUnstake, setUnstakeamount, ma
                                         <Flex align="center" justifyContent="center" >
                                             <Image src={Advertencia} boxSize="45px" mr={6} />
 
-                                            <Text fontSize="md  ">Unstake g varas will take 14 Eras that are (6 - 7 days) until you can withdraw tokens.</Text>
+                                            <Text fontSize="md">Unstake g varas will take 14 Eras that are (6 - 7 days) until you can withdraw tokens.</Text>
 
                                         </Flex>
                                     </Flex>
