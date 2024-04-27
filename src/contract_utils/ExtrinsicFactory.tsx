@@ -1,4 +1,4 @@
-import { GearApi, ProgramMetadata } from '@gear-js/api';
+import { GasInfo, GearApi, ProgramMetadata } from '@gear-js/api';
 import { Account } from '@gear-js/react-hooks/dist/esm/types';
 import { AnyJson, Codec } from '@polkadot/types/types';
 
@@ -32,6 +32,7 @@ export class ExtrinsicFactory {
         console.log(inputValue, payload);
 
         const gas = await this.calculateGasLimit(payload, this.metadata, this.programId, inputValue);
+        console.log('Hola soy el gas :', Number(gas?.toHuman().min_limit?.toString().replace(/,/g, '') as string) / 1000000000000);
 
         const message: any = {
             destination: this.programId,
@@ -43,7 +44,10 @@ export class ExtrinsicFactory {
 
 
         if (this.validateAccount()) {
-            return this.api?.message.send(message, this.metadata);
+            return {
+                message: this.api?.message.send(message, this.metadata),
+                gasLimit: Number(gas?.toHuman().min_limit?.toString().replace(/,/g, '') as string) / 1000000000000
+            }
         }
 
         return null;
@@ -67,7 +71,11 @@ export class ExtrinsicFactory {
         }
 
         if (this.validateAccount()) {
-            return this.api?.message.send(message, this.ftMetadata);
+
+            return {
+                message: this.api?.message.send(message, this.ftMetadata),
+                gasLimit: Number(gas?.toHuman().min_limit?.toString().replace(/,/g, '') as string) / 1000000000000
+            };
         }
 
         return null;
@@ -80,7 +88,7 @@ export class ExtrinsicFactory {
         )
     }
 
-    private async calculateGasLimit(payload: AnyJson, metadata: any, programId: `0x${string}`, inputValue: number) {
+    public async calculateGasLimit(payload: AnyJson, metadata: any, programId: `0x${string}`, inputValue: number) {
         return this.api?.program.calculateGas.handle(
             this.account?.decodedAddress as `0x${string}`,
 
