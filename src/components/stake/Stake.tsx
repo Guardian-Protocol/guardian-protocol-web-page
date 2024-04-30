@@ -12,12 +12,16 @@ import {
     InputRightElement,
     InputLeftElement,
     Image,
-
+    Flex,
     Grid,
+    Text,
 
 } from "@chakra-ui/react";
 import { AccountsModal } from "components/layout/header/account/accounts-modal";
 import VaraLogo from "../../assets/images/VaraLogo.png";
+import Advertencia from '../../assets/images/icons/advertencia.svg';
+import { useState } from "react";
+import { extrinsics } from "@polkadot/types/interfaces/definitions";
 
 
 type StakeProps = {
@@ -32,6 +36,8 @@ type StakeProps = {
     openModal: () => void;
     closeModal: () => void;
     accounts: any;
+    stakeGas: any;
+    setStakeGas: React.Dispatch<React.SetStateAction<any>>;
 };
 
 function Stake({
@@ -45,7 +51,9 @@ function Stake({
     stake,
     openModal,
     closeModal,
-    accounts }: StakeProps) {
+    accounts, 
+    stakeGas, 
+    setStakeGas }: StakeProps) {
 
     return (
         <TabPanel
@@ -141,6 +149,15 @@ function Stake({
                                         </Button>
                                     </InputRightElement>
                                 </InputGroup>
+                            </Td>
+                        </Grid>
+
+                        <Grid templateColumns="1fr auto" gap="1">
+                            <Td isNumeric color="white" fontSize="md">
+                                <Flex align="center" justifyContent="flex-end">
+                                    <Image src={Advertencia} boxSize="30px" mr={2} />
+                                    <Text>The cost of the Gas will be {String(stakeGas)} VARA currently</Text>
+                                </Flex>
                             </Td>
                         </Grid>
 

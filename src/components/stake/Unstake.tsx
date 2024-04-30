@@ -37,9 +37,12 @@ type UnstakeProps = {
     unstakeamount: any;
     setUnstakeamount: React.Dispatch<React.SetStateAction<any>>;
     unstake: () => void;
+    unstakeGas: any;
+    setUnstakeGas: React.Dispatch<React.SetStateAction<any>>;
+
 };
 
-function Unstake({ unstakeamount, AmountInputChangeUnstake, setUnstakeamount, maxamountvaraUnstake, openModal, closeModal, account, accounts, lockedBalance, isModalOpen, unstake }: UnstakeProps) {
+function Unstake({ unstakeamount, AmountInputChangeUnstake, setUnstakeamount, maxamountvaraUnstake, openModal, closeModal, account, accounts, lockedBalance, isModalOpen, unstake, unstakeGas, setUnstakeGas }: UnstakeProps) {
 
     return (
         <TabPanel
@@ -141,6 +144,15 @@ function Unstake({ unstakeamount, AmountInputChangeUnstake, setUnstakeamount, ma
                                         </Button>
                                     </InputRightElement>
                                 </InputGroup>
+                            </Td>
+                        </Grid>
+
+                        <Grid templateColumns="1fr auto" gap="1">
+                            <Td isNumeric color="white" fontSize="md">
+                                <Flex align="center" justifyContent="flex-end">
+                                    <Image src={Advertencia} boxSize="30px" mr={2} />
+                                    <Text>The cost of the Gas will be {String(unstakeGas)} VARA currently</Text>
+                                </Flex>
                             </Td>
                         </Grid>
 

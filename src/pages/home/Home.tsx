@@ -70,7 +70,8 @@ function Home() {
   }, [getHistory]);
 
   const stake = async () => {
-    const mintMessageFactory = await extFactory.messageExtrinsic(stakemessage, stakemessage.stake);
+    const extInfo = await extFactory.messageExtrinsic(stakemessage, stakemessage.stake);
+    const mintMessageFactory = extInfo?.message;
     const injector = await web3FromSource(accounts[0].meta.source);
 
     const alertStyle = {
@@ -92,6 +93,17 @@ function Home() {
       }
     )
   };
+
+  const [stakeGas, setStakeGas] = useState<any | null>(null);
+
+  useEffect(() => {
+    const calculateGas = async () => {
+      const extInfo = await extFactory.messageExtrinsic(stakemessage, stakemessage.stake);
+      setStakeGas(extInfo?.gasLimit ?? null);
+    };
+  
+    calculateGas();
+  }, []);
 
   const maxamountvara = () => {
     setStakeamount(account?.balance.value);
@@ -167,6 +179,19 @@ function Home() {
     setUnstakeamount(event.target.value);
   };
 
+  const [unstakeGas, setUnstakeGas] = useState<any | null>(null);
+
+  useEffect(() => {
+    const calculateGas = async () => {
+      const extInfo = await extFactory.ftAproveTokenExtrinsic(Unstakeamount);
+      const extInfoFactory = await extFactory.messageExtrinsic(unstakemessage, 0);
+
+      extInfo?.gasLimit && extInfoFactory?.gasLimit && setUnstakeGas(extInfo?.gasLimit + extInfoFactory?.gasLimit);
+    };
+  
+    calculateGas();
+  }, []);
+
   const unstake = async () => {
     const injector = await web3FromSource(accounts[0].meta.source);
 
@@ -176,7 +201,8 @@ function Home() {
       }
     }
 
-    const approveMessage = await extFactory.ftAproveTokenExtrinsic(Unstakeamount);
+    const extInfo = await extFactory.ftAproveTokenExtrinsic(Unstakeamount);
+    const approveMessage = extInfo?.message;
 
     approveMessage?.signAndSend(
       account?.address ?? alert.error("No account found"),
@@ -188,7 +214,8 @@ function Home() {
           alert.success(status.type, { ...alertStyle });
           setIsMessageSuccess(true);
 
-          const unStakeMessageFactory = await extFactory.messageExtrinsic(unstakemessage, 0);
+          const extInfoFactory = await extFactory.messageExtrinsic(unstakemessage, 0);
+          const unStakeMessageFactory = extInfoFactory?.message;
 
           unStakeMessageFactory?.signAndSend(
             account?.address ?? alert.error("No account found"),
@@ -224,8 +251,6 @@ function Home() {
           account={account}
           lockedBalance={lockedBalance}
           isModalOpen={isModalOpen}
-          AmountInputChange={AmountInputChange}
-          maxamountvara={maxamountvara}
           openModal={openModal}
           closeModal={closeModal}
           accounts={accounts}
@@ -233,13 +258,19 @@ function Home() {
           stakeamount={stakeamount}
           setStakeamount={setStakeamount}
           stake={stake}
+          maxamountvara={maxamountvara}
+          AmountInputChange={AmountInputChange}
+          stakeGas={stakeGas}
+          setStakeGas={setStakeGas}
 
           unstakeamount={Unstakeamount}
           setUnstakeamount={setUnstakeamount}
           unstake={unstake}
           maxamountvaraUnstake={maxamountvaraUnstake}
           AmountInputChangeUnstake={AmountInputChangeUnstake}
-
+          unstakeGas={unstakeGas}
+          setUnstakeGas={setUnstakeGas}
+          
           unestakeHistory={history.unestakeHistory}
           transactionHistory={history.transactionHistory}
         />
