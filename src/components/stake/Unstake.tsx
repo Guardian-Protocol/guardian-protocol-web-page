@@ -237,9 +237,7 @@ function Unstake({ unstakeamount, AmountInputChangeUnstake, setUnstakeamount, ma
                                     <Flex justify="space-between" p={5} align="center" w="100%">
                                         <Flex align="center" justifyContent="center" >
                                             <Image src={Advertencia} boxSize="45px" mr={6} />
-
-                                            <Text fontSize="md  ">Unstake g varas will take 14 Eras that are (6 - 7 days) until you can withdraw tokens.</Text>
-
+                                            <Text fontSize="md">VARA will be available for withdrawal in 14 Eras (6-7 days)</Text>
                                         </Flex>
                                     </Flex>
                                 </Box>
