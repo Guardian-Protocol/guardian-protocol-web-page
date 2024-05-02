@@ -1,5 +1,4 @@
 import {
-
     TabPanel,
     Table,
     Tbody,
@@ -16,33 +15,58 @@ import {
     Grid,
     Flex,
     Box,
-
 } from "@chakra-ui/react";
 import { AccountsModal } from "components/layout/header/account/accounts-modal";
+import { useEffect, useState } from "react";
+import { ContractCalls } from "contract_utils/ContractCalls";
+import { AnyJson } from "@polkadot/types/types";
 import VaraLogo from "../../assets/images/VaraLogo.png";
 import Advertencia from '../../assets/images/icons/advertencia.svg';
-
-
 
 type UnstakeProps = {
     account: any;
     lockedBalance: any;
     isModalOpen: boolean;
-    AmountInputChangeUnstake: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    maxamountvaraUnstake: () => void;
     openModal: () => void;
     closeModal: () => void;
     accounts: any;
-
-    unstakeamount: any;
-    setUnstakeamount: React.Dispatch<React.SetStateAction<any>>;
-    unstake: () => void;
-    unstakeGas: any;
-    setUnstakeGas: React.Dispatch<React.SetStateAction<any>>;
-
+    contractCalls: ContractCalls;
 };
 
-function Unstake({ unstakeamount, AmountInputChangeUnstake, setUnstakeamount, maxamountvaraUnstake, openModal, closeModal, account, accounts, lockedBalance, isModalOpen, unstake, unstakeGas, setUnstakeGas }: UnstakeProps) {
+function Unstake({ 
+    openModal, 
+    closeModal, 
+    account, 
+    accounts, 
+    lockedBalance, 
+    isModalOpen, 
+    contractCalls }: UnstakeProps) {
+    
+    const [unstakeAmount, setUnstakeAmount] = useState(0);
+    const [approveGas, setApproveGas] = useState(0);
+
+    const maxamountvaraUnstake = () => {
+        setUnstakeAmount(account?.balance.value);
+    };
+
+    const unstakeVara = async () => {
+        const payload: AnyJson = {
+            unestake: unstakeAmount
+        }
+
+        const approvePayload: AnyJson = {
+            "Approve": {
+                "to": process.env.REACT_PROGRAM_SOURCE,
+                "amount": unstakeAmount
+            },
+        }
+    
+        await contractCalls.unstake(payload, approvePayload, 0, approveGas);
+    }
+    
+    useEffect(() => {
+        console.log(approveGas)
+    }, [approveGas]);
 
     return (
         <TabPanel
@@ -110,21 +134,26 @@ function Unstake({ unstakeamount, AmountInputChangeUnstake, setUnstakeamount, ma
                                         _hover={{
                                             borderColor: "#F8AD18",
                                         }}
-                                        value={unstakeamount}
                                         onChange={(event) => {
                                             const { value } = event.target;
-                                            if (!Number.isNaN(Number(value))) {
-                                                AmountInputChangeUnstake(event);
+                                            if (!Number.isNaN(Number(value))) {    
+                                                setUnstakeAmount(Number(value));
+
+                                                const approvePayload: AnyJson = {
+                                                    "Approve": {
+                                                        "to": process.env.REACT_FT_PROGRAM_SOURCE,
+                                                        "amount": unstakeAmount
+                                                    },
+                                                }
+
+                                                contractCalls.gasLimit("ft", approvePayload, Number(value)).then((calculatedGas) => {
+                                                    setApproveGas(calculatedGas);
+                                                });
                                             }
                                         }}
                                         borderWidth="3px"
                                         display="flex"
                                         alignContent="center"
-                                        onClick={() => {
-                                            if (unstakeamount === "0") {
-                                                setUnstakeamount("");
-                                            }
-                                        }}
                                     />
                                     <InputRightElement
                                         paddingRight="20px"
@@ -151,7 +180,7 @@ function Unstake({ unstakeamount, AmountInputChangeUnstake, setUnstakeamount, ma
                             <Td isNumeric color="white" fontSize="md">
                                 <Flex align="center" justifyContent="flex-end">
                                     <Image src={Advertencia} boxSize="30px" mr={2} />
-                                    <Text>The cost of the Gas will be {String(unstakeGas)} VARA currently</Text>
+                                    <Text>The cost of the Gas will be {String((approveGas / 100000000000) * 2)} VARA currently</Text>
                                 </Flex>
                             </Td>
                         </Grid>
@@ -176,7 +205,7 @@ function Unstake({ unstakeamount, AmountInputChangeUnstake, setUnstakeamount, ma
                                 style={{ color: "white" }}
                                 fontSize="18px"
                             >
-                                {unstakeamount} VARA
+                                {unstakeAmount} VARA
                             </Td>
                         </Grid>
 
@@ -265,7 +294,7 @@ function Unstake({ unstakeamount, AmountInputChangeUnstake, setUnstakeamount, ma
                                         background: "#F8AD18",
                                         width: "240px",
                                     }}
-                                    onClick={unstake}
+                                    onClick={unstakeVara}
                                 >
                                     Unstake
                                 </Button>

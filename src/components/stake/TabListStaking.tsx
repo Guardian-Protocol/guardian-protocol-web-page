@@ -5,12 +5,11 @@ import {
   Tab,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import { ContractCalls } from "contract_utils/ContractCalls";
 import { Stake } from "./Stake";
 import { Withdraw } from "./Withdraw";
 import { Unstake } from "./Unstake";
 import { History } from "./History";
-
-
 
 type TabListStakingProps = {
   account: any;
@@ -19,48 +18,25 @@ type TabListStakingProps = {
   openModal: () => void;
   closeModal: () => void;
   accounts: any;
-
-  stakeamount: any;
-  setStakeamount: React.Dispatch<React.SetStateAction<any>>;
-  stake: () => void;
-  AmountInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  maxamountvara: () => void;
-  stakeGas: any;
-  setStakeGas: React.Dispatch<React.SetStateAction<any>>;
-
-  unstakeamount: any;
-  setUnstakeamount: React.Dispatch<React.SetStateAction<any>>;
-  unstake: () => void;
-  maxamountvaraUnstake: () => void;
-  AmountInputChangeUnstake : (event: React.ChangeEvent<HTMLInputElement>) => void;
-  unstakeGas: any;
-  setUnstakeGas: React.Dispatch<React.SetStateAction<any>>;
-
-  unestakeHistory: any[][];
-  transactionHistory: any[];
+  contractCalls: ContractCalls;
 };
 
 function TabListStaking({
-  stakeamount,
   account,
   lockedBalance,
   isModalOpen,
-  AmountInputChange,
-  setStakeamount,
-  maxamountvara,
-  stake,
   openModal,
   closeModal,
   accounts,
-  unstakeamount,
-  setUnstakeamount,
-  unstake, maxamountvaraUnstake, AmountInputChangeUnstake, unestakeHistory, transactionHistory, stakeGas, setStakeGas, unstakeGas, setUnstakeGas}: TabListStakingProps) {
+  contractCalls
+  }: TabListStakingProps) {
+  
   const [tabIndex, setTabIndex] = useState(0);
 
 
   useEffect(() => {
     console.log(`Se seleccionó la pestaña ${tabIndex}`);
-  }, [tabIndex, account, lockedBalance, stakeamount, isModalOpen, accounts]);
+  }, [tabIndex, account, lockedBalance, isModalOpen, accounts]);
 
   const handleTabChange = (index: any) => {
     setTabIndex(index);
@@ -127,12 +103,27 @@ function TabListStaking({
       </TabList>
 
       <TabPanels>
-        <Stake stakeamount={stakeamount} account={account} lockedBalance={lockedBalance} isModalOpen={isModalOpen} AmountInputChange={AmountInputChange} setStakeamount={setStakeamount} maxamountvara={maxamountvara} stake={stake} openModal={openModal} closeModal={closeModal} accounts={accounts} stakeGas={stakeGas} setStakeGas={setStakeGas}/>
+        <Stake 
+        account={account} 
+        lockedBalance={lockedBalance} 
+        isModalOpen={isModalOpen} 
+        openModal={openModal} 
+        closeModal={closeModal} 
+        accounts={accounts} 
+        contractCalls={contractCalls}
+        />
 
-        <Unstake account={account} lockedBalance={lockedBalance} isModalOpen={isModalOpen} maxamountvaraUnstake={maxamountvaraUnstake} AmountInputChangeUnstake={AmountInputChangeUnstake} openModal={openModal} closeModal={closeModal} accounts={accounts} unstakeamount={unstakeamount} setUnstakeamount={setUnstakeamount} unstake={unstake} unstakeGas={unstakeGas} setUnstakeGas={setUnstakeGas}/>
+        <Unstake 
+        account={account} 
+        lockedBalance={lockedBalance} 
+        isModalOpen={isModalOpen} 
+        openModal={openModal} closeModal={closeModal} 
+        accounts={accounts} 
+        contractCalls={contractCalls}
+        />
 
-        <Withdraw unestakeHistory={unestakeHistory} />
-        <History transactionHistory={transactionHistory} />
+        <Withdraw contractCalls={contractCalls} />
+        <History contractCalls={contractCalls} />
       </TabPanels>
 
     </Tabs>

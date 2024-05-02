@@ -1,19 +1,32 @@
 import {
-
     TabPanel,
     Text,
     Image,
     Box,
     Flex,
-
 } from "@chakra-ui/react";
+import { useState } from "react";
+import { ContractCalls } from "contract_utils/ContractCalls";
 import VaraLogo from "../../assets/images/VaraLogo.png";
 
 type HistoryProps = {
-    transactionHistory: any[];
+    contractCalls: ContractCalls;
 };
 
-function History({transactionHistory}: HistoryProps) {
+function History({contractCalls}: HistoryProps) {
+    const [transactionHistory, setTransactionHistory] = useState<any[]>([
+        {
+            transactionAmount: "0",
+            transactionType: "Stake",
+            transactionTime: "0"
+        }
+    ]);
+
+    contractCalls.getHistory().then((history) => {
+        if (history !== "No history found") {
+            setTransactionHistory(history.transactionHistory);
+        }
+    });
 
     if (transactionHistory[0]?.transactionAmount === "0") {
         return (
