@@ -1,9 +1,8 @@
 {
   "files": {
     "main.css": "/guardian-protocol-web-page/static/css/main.c3cae081.css",
-    "main.js": "/guardian-protocol-web-page/static/js/main.249f3ca1.js",
+    "main.js": "/guardian-protocol-web-page/static/js/main.399888c8.js",
     "static/media/XBackground.svg": "/guardian-protocol-web-page/static/media/XBackground.ac976c82442e02055fa4cd79c6aedf0d.svg",
-    "static/media/state.meta.wasm": "/guardian-protocol-web-page/static/media/state.meta.de1ca2ba4ae59b7745a3.wasm",
     "static/media/GuardianBlack.png": "/guardian-protocol-web-page/static/media/GuardianBlack.a5eb1ddc7dc5bdb4d1a5.png",
     "static/media/VaraLogo.png": "/guardian-protocol-web-page/static/media/VaraLogo.0144a5bf5ca258e91171.png",
     "static/media/DotGrid.png": "/guardian-protocol-web-page/static/media/DotGrid.e365bd2e7058d4a26259.png",
@@ -15,10 +14,10 @@
     "static/media/medium.svg": "/guardian-protocol-web-page/static/media/medium.a55230a9a6d6d31159680e98d0161368.svg",
     "index.html": "/guardian-protocol-web-page/index.html",
     "main.c3cae081.css.map": "/guardian-protocol-web-page/static/css/main.c3cae081.css.map",
-    "main.249f3ca1.js.map": "/guardian-protocol-web-page/static/js/main.249f3ca1.js.map"
+    "main.399888c8.js.map": "/guardian-protocol-web-page/static/js/main.399888c8.js.map"
   },
   "entrypoints": [
     "static/css/main.c3cae081.css",
-    "static/js/main.249f3ca1.js"
+    "static/js/main.399888c8.js"
   ]
 }
