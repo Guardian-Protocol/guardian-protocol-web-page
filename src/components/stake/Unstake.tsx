@@ -64,10 +64,7 @@ function Unstake({
         await contractCalls.unstake(payload, approvePayload, 0, approveGas);
     }
     
-    useEffect(() => {
-        console.log(approveGas)
-    }, [approveGas]);
-
+    useEffect(() => { }, [approveGas]);
     return (
         <TabPanel
             display="flex"
@@ -134,6 +131,7 @@ function Unstake({
                                         _hover={{
                                             borderColor: "#F8AD18",
                                         }}
+                                        value={unstakeAmount}
                                         onChange={(event) => {
                                             const { value } = event.target;
                                             if (!Number.isNaN(Number(value))) {    
@@ -230,44 +228,10 @@ function Unstake({
                                 textAlign="end"
                                 style={{ color: "white" }}
                             >
-                                {parseFloat(account?.balance.value as string) + lockedBalance}
+                                {lockedBalance} gVARA
                             </Td>
                         </Grid>
 
-                        <Grid templateColumns="1fr auto" gap="4">
-                            <Tr textColor="white">
-                                <Td fontSize="18px" style={{ color: "white" }}>
-                                    Locked
-                                </Td>
-                                <Td style={{ visibility: "hidden" }}>.</Td>
-                            </Tr>
-                            <Td
-                                fontSize="18px"
-                                isNumeric
-                                textAlign="end"
-                                style={{ color: "white" }}
-                            >
-                                {lockedBalance}
-                                {lockedBalance}
-                            </Td>
-                        </Grid>
-
-                        <Grid templateColumns="1fr auto" gap="4">
-                            <Tr textColor="white">
-                                <Td fontSize="18px" style={{ color: "white" }}>
-                                    Available
-                                </Td>
-                                <Td style={{ visibility: "hidden" }}>.</Td>
-                            </Tr>
-                            <Td
-                                fontSize="18px"
-                                isNumeric
-                                textAlign="end"
-                                style={{ color: "white" }}
-                            >
-                                {account?.balance.value}
-                            </Td>
-                        </Grid>
                         <TabPanel
                             display="flex"
                             justifyContent="center"

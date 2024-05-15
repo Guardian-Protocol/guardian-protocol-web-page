@@ -7,6 +7,8 @@ import XBackground from "../../assets/images/XBackground.svg";
 
 function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [lockedBalance, setLockedBalance] = useState(0);
+
   const { api } = useApi();
   const { accounts, account } = useAccount();
   const alert = useAlert();
@@ -21,7 +23,11 @@ function Home() {
     setIsModalOpen(false);
   };
 
-  useEffect(() => {}, [api, account, accounts]);
+  contractCalls.getLockedBalance().then((balance) => {
+    setLockedBalance(balance);
+  });
+
+  useEffect(() => { }, [api, account, accounts]);
   useEffect(() => {
     document.documentElement.style.setProperty("--background-color", "#131111");
   }, []);
@@ -40,7 +46,7 @@ function Home() {
       <Center>
         <TabListStaking
           account={account}
-          lockedBalance={0}
+          lockedBalance={lockedBalance}
           isModalOpen={isModalOpen}
           openModal={openModal}
           closeModal={closeModal}

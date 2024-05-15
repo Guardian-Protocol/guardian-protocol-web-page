@@ -29,7 +29,6 @@ function Withdraw({contractCalls }: WithdrawProps) {
     contractCalls.getHistory().then((history) => {
       if(history !== "No history found") {
         setUnestakeHistory(history.unestakeHistory)
-        console.log(history.unestakeHistory)
       }
     });
   }, [contractCalls])

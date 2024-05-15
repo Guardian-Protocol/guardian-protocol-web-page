@@ -118,6 +118,7 @@ function Stake({
                                         _hover={{
                                             borderColor: "#F8AD18",
                                         }}
+                                        value={stakeAmount}
                                         onChange={(event) => {
                                             const { value } = event.target;
                                             if (!Number.isNaN(Number(value))) {

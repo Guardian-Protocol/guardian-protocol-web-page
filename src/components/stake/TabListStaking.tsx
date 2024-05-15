@@ -34,9 +34,7 @@ function TabListStaking({
   const [tabIndex, setTabIndex] = useState(0);
 
 
-  useEffect(() => {
-    console.log(`Se seleccionó la pestaña ${tabIndex}`);
-  }, [tabIndex, account, lockedBalance, isModalOpen, accounts]);
+  useEffect(() => { }, [tabIndex, account, lockedBalance, isModalOpen, accounts]);
 
   const handleTabChange = (index: any) => {
     setTabIndex(index);

@@ -72,9 +72,11 @@ export class ContractCalls {
                         this.metadata
                     );
                 } catch (err) {
-                    this.alert.error(String(err), this.alertStyle);
+                    if (!String(err).includes("ValueLessThanMinimal")) {
+                        this.alert.error(String(err), this.alertStyle);
+                    }
                 }
-
+                
                 break;
             }
             case "ft": {
@@ -88,7 +90,9 @@ export class ContractCalls {
                         this.ftMetadata
                     );
                 } catch (err) {
-                    this.alert.error(String(err), this.alertStyle)
+                    if (!String(err).includes("ValueLessThanMinimal")) {
+                        this.alert.error(String(err), this.alertStyle);
+                    }
                 }
 
                 break;
@@ -102,17 +106,12 @@ export class ContractCalls {
     }
 
     public async getHistory() {
-        const state = await this.api?.programState.read({
-            programId: this.source,
-            payload: this.source,
-        }, this.metadata);
-
-        const data = state.toJSON() as { users: any[] };
+        const data = await this.getState();
         const users = data?.users;
 
         try {
-            const usernew = users.find((user: any[]) => user[0] === this.account?.decodedAddress);
-            const dataUser = usernew[1];
+            const actualUser = users.find((user: any[]) => user[0] === this.account?.decodedAddress);
+            const dataUser = actualUser[1];
             return {
                 unestakeHistory: dataUser.unestakeHistory,
                 userTotalVaraStaked: dataUser.userTotalVaraStaked,
@@ -122,6 +121,26 @@ export class ContractCalls {
         catch (error) {
             return "No history found";
         }
+    }
+
+    public async getLockedBalance() {
+        const data = await this.getState();
+
+        try {
+            const actualUser = data.users.find((user: any[]) => user[0] === this.account?.decodedAddress);
+            return actualUser[1].userTotalVaraStaked;
+        } catch (error) {
+            return 0;
+        }
+    }
+
+    private async getState() {
+        const state = await this.api?.programState.read({
+            programId: this.source,
+            payload: this.source,
+        }, this.metadata);
+
+        return state.toJSON() as { users: any[] };
     }
 
     private async messageExtrinsic(payload: AnyJson, inputValue: number, gassLimit: number) {
