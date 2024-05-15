@@ -178,7 +178,7 @@ function Unstake({
                             <Td isNumeric color="white" fontSize="md">
                                 <Flex align="center" justifyContent="flex-end">
                                     <Image src={Advertencia} boxSize="30px" mr={2} />
-                                    <Text>The cost of the Gas will be {String((approveGas / 100000000000) * 2)} VARA currently</Text>
+                                    <Text>The cost of the Gas will be {String((approveGas / 1000000000000) * 2)} VARA currently</Text>
                                 </Flex>
                             </Td>
                         </Grid>
