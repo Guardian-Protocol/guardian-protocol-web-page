@@ -1,5 +1,4 @@
 import {
-
     TabPanel,
     Table,
     Tbody,
@@ -15,45 +14,49 @@ import {
     Flex,
     Grid,
     Text,
-
 } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 import { AccountsModal } from "components/layout/header/account/accounts-modal";
+import { ContractCalls } from "contract_utils/ContractCalls";
+import { AnyJson } from "@polkadot/types/types";
 import VaraLogo from "../../assets/images/VaraLogo.png";
 import Advertencia from '../../assets/images/icons/advertencia.svg';
-import { useState } from "react";
-import { extrinsics } from "@polkadot/types/interfaces/definitions";
-
 
 type StakeProps = {
-    stakeamount: any;
     account: any;
     lockedBalance: any;
     isModalOpen: boolean;
-    AmountInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    setStakeamount: React.Dispatch<React.SetStateAction<any>>;
-    maxamountvara: () => void;
-    stake: () => void;
     openModal: () => void;
     closeModal: () => void;
     accounts: any;
-    stakeGas: any;
-    setStakeGas: React.Dispatch<React.SetStateAction<any>>;
+    contractCalls: ContractCalls
 };
 
 function Stake({
-    stakeamount,
     account,
     lockedBalance,
     isModalOpen,
-    AmountInputChange,
-    setStakeamount,
-    maxamountvara,
-    stake,
     openModal,
     closeModal,
     accounts, 
-    stakeGas, 
-    setStakeGas }: StakeProps) {
+    contractCalls }: StakeProps) {
+
+    const [stakeAmount, setStakeAmount] = useState(0);
+    const [gas, setGas] = useState(0);
+
+    const maxamountvara = () => {
+        setStakeAmount(account?.balance.value);
+    };
+
+    const stakeVara = async () => {
+        const payload: AnyJson = {
+            stake: stakeAmount
+        }
+
+        await contractCalls.stake(payload, stakeAmount, gas);
+    }
+
+    useEffect(() => {}, [gas]);
 
     return (
         <TabPanel
@@ -115,21 +118,21 @@ function Stake({
                                         _hover={{
                                             borderColor: "#F8AD18",
                                         }}
-                                        value={stakeamount}
+                                        value={stakeAmount}
                                         onChange={(event) => {
                                             const { value } = event.target;
                                             if (!Number.isNaN(Number(value))) {
-                                                AmountInputChange(event);
+                                                setStakeAmount(Number(value));
+
+                                                contractCalls.gasLimit("staking", { stake: Number(value) }, Number(value)).then((calculatedGas) => {
+                                                    console.log(calculatedGas);
+                                                    setGas(calculatedGas);
+                                                });
                                             }
                                         }}
                                         borderWidth="3px"
                                         display="flex"
                                         alignContent="center"
-                                        onClick={() => {
-                                            if (stakeamount === "0") {
-                                                setStakeamount("");
-                                            }
-                                        }}
                                     />
                                     <InputRightElement
                                         paddingRight="20px"
@@ -156,7 +159,7 @@ function Stake({
                             <Td isNumeric color="white" fontSize="md">
                                 <Flex align="center" justifyContent="flex-end">
                                     <Image src={Advertencia} boxSize="30px" mr={2} />
-                                    <Text>The cost of the Gas will be {String(stakeGas)} VARA currently</Text>
+                                    <Text>The cost of the Gas will be {String(gas / 100000000000)} VARA currently</Text>
                                 </Flex>
                             </Td>
                         </Grid>
@@ -179,7 +182,7 @@ function Stake({
                                 style={{ color: "white" }}
                                 fontSize="18px"
                             >
-                                {stakeamount} gVARA
+                                {stakeAmount} gVARA
                             </Td>
                         </Grid>
 
@@ -255,7 +258,7 @@ function Stake({
                                         background: "#F8AD18",
                                         width: "240px",
                                     }}
-                                    onClick={stake}
+                                    onClick={stakeVara}
                                 >
                                     Stake
                                 </Button>
