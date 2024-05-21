@@ -23,8 +23,9 @@ function History({contractCalls}: HistoryProps) {
     ]);
 
     contractCalls.getHistory().then((history) => {
-        if (history !== "No history found") {
-            setTransactionHistory(history.transactionHistory);
+        if (history !== 0) {
+            console.log(history);
+            setTransactionHistory(history);
         }
     });
 
