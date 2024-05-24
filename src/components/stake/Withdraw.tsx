@@ -26,9 +26,9 @@ function Withdraw({contractCalls }: WithdrawProps) {
     ]);
 
   useEffect(() => {
-    contractCalls.getHistory().then((history) => {
-      if(history !== "No history found") {
-        setUnestakeHistory(history.unestakeHistory)
+    contractCalls.getUnestakeHistory().then((history) => {
+      if(history !== 0) {
+        setUnestakeHistory(history)
       }
     });
   }, [contractCalls])

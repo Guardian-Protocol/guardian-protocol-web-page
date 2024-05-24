@@ -106,41 +106,29 @@ export class ContractCalls {
     }
 
     public async getHistory() {
-        const data = await this.getState();
-        const users = data?.users;
+        return (await this.getState({ GetTransactionHistory: this.account?.decodedAddress })).transactionHistory;
+    }
 
-        try {
-            const actualUser = users.find((user: any[]) => user[0] === this.account?.decodedAddress);
-            const dataUser = actualUser[1];
-            return {
-                unestakeHistory: dataUser.unestakeHistory,
-                userTotalVaraStaked: dataUser.userTotalVaraStaked,
-                transactionHistory: dataUser.transactionHistory,
-            }
-        }
-        catch (error) {
-            return "No history found";
-        }
+    public async getUnestakeHistory() {
+        return (await this.getState({ GetUnestakeHistory: this.account?.decodedAddress })).unestakeHistory;
     }
 
     public async getLockedBalance() {
-        const data = await this.getState();
-
-        try {
-            const actualUser = data.users.find((user: any[]) => user[0] === this.account?.decodedAddress);
-            return actualUser[1].userTotalVaraStaked;
-        } catch (error) {
-            return 0;
-        }
+        return (await this.getState({ GetUserVaraLocked: this.account?.decodedAddress })).userVaraLocked;
     }
 
-    private async getState() {
+    private async getState(payload: AnyJson = {}) {
         const state = await this.api?.programState.read({
             programId: this.source,
-            payload: this.source,
+            payload,
         }, this.metadata);
 
-        return state.toJSON() as { users: any[] };
+        if ((state as any).isErr) {
+            this.alert.error((state as any).asErr.asUserNotFound, this.alertStyle);
+            return 0;
+        } 
+
+        return (state as any).toJSON().ok;
     }
 
     private async messageExtrinsic(payload: AnyJson, inputValue: number, gassLimit: number) {
