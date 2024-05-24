@@ -56,6 +56,7 @@ function Unstake({
 
         const approvePayload: AnyJson = {
             "Approve": {
+                "tx_id": null,
                 "to": process.env.REACT_PROGRAM_SOURCE,
                 "amount": unstakeAmount
             },
