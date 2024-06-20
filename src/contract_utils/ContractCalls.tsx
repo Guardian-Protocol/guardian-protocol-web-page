@@ -1,4 +1,4 @@
-import { GearApi, ProgramMetadata } from "@gear-js/api";
+import { GearApi, GearKeyring, ProgramMetadata } from "@gear-js/api";
 import { Account, AlertContainerFactory } from "@gear-js/react-hooks/dist/esm/types";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
 import { web3FromSource } from "@polkadot/extension-dapp";
@@ -12,6 +12,8 @@ export class ContractCalls {
 
     private accounts: any;
 
+    private adminSeed: `0x${string}`;
+
     private source: `0x${string}`;
 
     private ftSource: `0x${string}`;
@@ -19,6 +21,8 @@ export class ContractCalls {
     private metadata: ProgramMetadata;
 
     private ftMetadata: ProgramMetadata;
+
+    private storeMetadata: ProgramMetadata;
 
     private alert: AlertContainerFactory;
 
@@ -30,12 +34,15 @@ export class ContractCalls {
         accounts: any,
         alert: AlertContainerFactory
     ) {
-
         this.api = api;
         this.source = process.env.REACT_PROGRAM_SOURCE as `0x${string}`;
         this.ftSource = process.env.REACT_FT_PROGRAM_SOURCE as `0x${string}`;
         this.metadata = ProgramMetadata.from(process.env.REACT_PROGRAM_METADATA as `0x${string}`);
         this.ftMetadata = ProgramMetadata.from(process.env.REACT_FT_PROGRAM_METADATA as `0x${string}`);
+        this.storeMetadata = ProgramMetadata.from(process.env.REACT_STORE_METADATA as `0x${string}`);
+
+        const { seed } = GearKeyring.generateSeed("glove large laugh school behind wear artist current analyst join media kind");
+        this.adminSeed = seed;
 
         this.account = account;
         this.accounts = accounts;
@@ -43,8 +50,25 @@ export class ContractCalls {
     }
 
     public async stake(payload: AnyJson, inputValue: number, gassLimit: number) {
-        const extrinsic = await this.messageExtrinsic(payload, inputValue, gassLimit) as any;
-        await this.signer(extrinsic, () => { })
+        const transferMessage = this.api.message.send({
+            destination: "0xb693ba1484d8eed0dae1283fcbea1d4820234b23c76497d85d28973042e4200a", 
+            payload: "0x",
+            gasLimit: 0.06 * 1000000000000,
+            value: inputValue * 1000000000000 + 0.06 * 1000000000000
+        });
+        const extrinsic = await this.messageExtrinsic(payload, 0, gassLimit) as any;
+        const batch = this.api.tx.utility.batch([transferMessage, extrinsic]);
+
+        await this.signer(batch, async () => { 
+            const stakingExtrinsic = this.api.tx.staking.bondExtra(inputValue * 1000000000000);
+            const proxyExtrinsic = this.api.tx.proxy.proxy(
+                "0xb693ba1484d8eed0dae1283fcbea1d4820234b23c76497d85d28973042e4200a",
+                null,
+                stakingExtrinsic
+            )
+
+            await this.signWithProxy(proxyExtrinsic, () => { });
+        })
     }
 
     public async unstake(payload: AnyJson, approvePayload: AnyJson, inputValue: number, approveLimit: number) {
@@ -53,7 +77,36 @@ export class ContractCalls {
         await this.signer(approveExtrinsic, async () => {
             const unestakeLimit = await this.gasLimit("staking", payload, inputValue);
             const extrinsic = await this.messageExtrinsic(payload, inputValue, unestakeLimit) as any;
-            await this.signer(extrinsic, () => { })
+
+            await this.signer(extrinsic, async () => {
+                const unboundExtrinsic = this.api.tx.staking.unbond(inputValue * 1000000000000);
+                const proxyExtrinsic = this.api.tx.proxy.proxy(
+                    "0xb693ba1484d8eed0dae1283fcbea1d4820234b23c76497d85d28973042e4200a",
+                    null,
+                    unboundExtrinsic
+                );
+
+                await this.signWithProxy(proxyExtrinsic, () => {        
+                    this.alert.success("Successful transaction", this.alertStyle); 
+                });
+            })
+        });
+    }
+
+    public async withdraw(payload: AnyJson, inputValue: number, gassLimit: number) {
+        const withdrawExtrinsic = await this.messageExtrinsic(payload, inputValue, gassLimit) as any;
+
+        await this.signer(withdrawExtrinsic, async () => {
+            const transferExtrinsic = this.api.tx.balances.transfer(this.account?.decodedAddress!, inputValue * 1000000000000);
+            const proxyExtrinsic = this.api.tx.proxy.proxy(
+                "0xb693ba1484d8eed0dae1283fcbea1d4820234b23c76497d85d28973042e4200a",
+                null,
+                transferExtrinsic
+            );
+
+            await this.signWithProxy(proxyExtrinsic, () => { 
+                this.alert.success("Successful transaction", this.alertStyle);
+            });
         });
     }
 
@@ -106,22 +159,42 @@ export class ContractCalls {
     }
 
     public async getHistory() {
-        return (await this.getState({ GetTransactionHistory: this.account?.decodedAddress })).transactionHistory;
+        const result = (await this.getState({ GetTransactionHistory: this.account?.decodedAddress }));
+        return result === 0 ? 0 : result.transactionHistory;
     }
 
     public async getUnestakeHistory() {
-        return (await this.getState({ GetUnestakeHistory: this.account?.decodedAddress })).unestakeHistory;
+        const result = (await this.getState({ GetUnestakeHistory: this.account?.decodedAddress }));
+        return result === 0 ? 0 : result.unestakeHistory;
     }
 
     public async getLockedBalance() {
-        return (await this.getState({ GetUserVaraLocked: this.account?.decodedAddress })).userVaraLocked;
+        const result = (await this.getState({ GetUserVaraLocked: this.account?.decodedAddress }));
+        console.log(result);
+        return result === 0 ? 0 : result.userVaraLocked;
     }
 
     private async getState(payload: AnyJson = {}) {
-        const state = await this.api?.programState.read({
+        const store = await this.api?.programState.read({
             programId: this.source,
-            payload,
+            payload: {
+                GetUserStore: this.account?.decodedAddress,
+            },
         }, this.metadata);
+
+        if ((store as any).isErr) {
+            this.alert.error((store as any).asErr.asStoreNotAvailable, this.alertStyle);
+            return 0;
+        } 
+
+        console.log(await this.api.balance.findOut("0x4a644276067790c0248f5a0edeed7226ebfaf08e972196e23c7f3d8bf6751985"))
+
+        // console.log((store as any).toJSON());
+
+        const state = await this.api?.programState.read({
+            programId: (store as any).toJSON().ok.userStore,
+            payload,
+        }, this.storeMetadata);
 
         if ((state as any).isErr) {
             this.alert.error((state as any).asErr.asUserNotFound, this.alertStyle);
@@ -167,6 +240,22 @@ export class ContractCalls {
         await messageExtrinsic.signAndSend(
             this.account?.address ?? this.alert.error("No account found", this.alertStyle),
             { signer: injector.signer },
+            ({ status }) => {
+                if (status.isInBlock) {
+                    this.alert.success(status.asInBlock.toHuman()?.toString(), this.alertStyle);
+                } else if (status.isFinalized) {
+                    this.alert.success(status.type, this.alertStyle);
+                    continueWith();
+                }
+            }
+        )
+    }
+
+    private async signWithProxy(messageExtrinsic: SubmittableExtrinsic<"promise">, continueWith: () => void) {
+        const kering = await GearKeyring.fromSeed(this.adminSeed);
+    
+        await messageExtrinsic.signAndSend(
+            kering, 
             ({ status }) => {
                 if (status.isInBlock) {
                     this.alert.success(status.asInBlock.toHuman()?.toString(), this.alertStyle);
