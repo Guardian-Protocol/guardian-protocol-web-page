@@ -14,6 +14,8 @@ export class ContractCalls {
 
     private adminSeed: `0x${string}`;
 
+    private stashAddress: `0x${string}`;
+
     private source: `0x${string}`;
 
     private ftSource: `0x${string}`;
@@ -40,6 +42,7 @@ export class ContractCalls {
         this.metadata = ProgramMetadata.from(process.env.REACT_PROGRAM_METADATA as `0x${string}`);
         this.ftMetadata = ProgramMetadata.from(process.env.REACT_FT_PROGRAM_METADATA as `0x${string}`);
         this.storeMetadata = ProgramMetadata.from(process.env.REACT_STORE_METADATA as `0x${string}`);
+        this.stashAddress = process.env.REACT_STASH_ADDRESS as `0x${string}`;
 
         const { seed } = GearKeyring.generateSeed("glove large laugh school behind wear artist current analyst join media kind");
         this.adminSeed = seed;
@@ -51,7 +54,7 @@ export class ContractCalls {
 
     public async stake(payload: AnyJson, inputValue: number, gassLimit: number) {
         const transferMessage = this.api.message.send({
-            destination: "0xb693ba1484d8eed0dae1283fcbea1d4820234b23c76497d85d28973042e4200a", 
+            destination: this.stashAddress, 
             payload: "0x",
             gasLimit: 0.06 * 1000000000000,
             value: inputValue * 1000000000000 + 0.06 * 1000000000000
@@ -62,7 +65,7 @@ export class ContractCalls {
         await this.signer(batch, async () => { 
             const stakingExtrinsic = this.api.tx.staking.bondExtra(inputValue * 1000000000000);
             const proxyExtrinsic = this.api.tx.proxy.proxy(
-                "0xb693ba1484d8eed0dae1283fcbea1d4820234b23c76497d85d28973042e4200a",
+                this.stashAddress,
                 null,
                 stakingExtrinsic
             )
@@ -81,7 +84,7 @@ export class ContractCalls {
             await this.signer(extrinsic, async () => {
                 const unboundExtrinsic = this.api.tx.staking.unbond(inputValue * 1000000000000);
                 const proxyExtrinsic = this.api.tx.proxy.proxy(
-                    "0xb693ba1484d8eed0dae1283fcbea1d4820234b23c76497d85d28973042e4200a",
+                    this.stashAddress,
                     null,
                     unboundExtrinsic
                 );
@@ -99,7 +102,7 @@ export class ContractCalls {
         await this.signer(withdrawExtrinsic, async () => {
             const transferExtrinsic = this.api.tx.balances.transfer(this.account?.decodedAddress!, inputValue * 1000000000000);
             const proxyExtrinsic = this.api.tx.proxy.proxy(
-                "0xb693ba1484d8eed0dae1283fcbea1d4820234b23c76497d85d28973042e4200a",
+                this.stashAddress,
                 null,
                 transferExtrinsic
             );
@@ -186,10 +189,6 @@ export class ContractCalls {
             this.alert.error((store as any).asErr.asStoreNotAvailable, this.alertStyle);
             return 0;
         } 
-
-        console.log(await this.api.balance.findOut("0x4a644276067790c0248f5a0edeed7226ebfaf08e972196e23c7f3d8bf6751985"))
-
-        // console.log((store as any).toJSON());
 
         const state = await this.api?.programState.read({
             programId: (store as any).toJSON().ok.userStore,
