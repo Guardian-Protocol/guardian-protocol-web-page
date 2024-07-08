@@ -53,16 +53,9 @@ export class ContractCalls {
     }
 
     public async stake(payload: AnyJson, inputValue: number, gassLimit: number) {
-        const transferMessage = this.api.message.send({
-            destination: this.stashAddress, 
-            payload: "0x",
-            gasLimit: 0.06 * 1000000000000,
-            value: inputValue * 1000000000000 + 0.06 * 1000000000000
-        });
-        const extrinsic = await this.messageExtrinsic(payload, 0, gassLimit) as any;
-        const batch = this.api.tx.utility.batch([transferMessage, extrinsic]);
+        const contractExtrinsic = await this.messageExtrinsic(payload, inputValue, gassLimit) as any;
 
-        await this.signer(batch, async () => { 
+        await this.signer(contractExtrinsic, async () => { 
             const stakingExtrinsic = this.api.tx.staking.bondExtra(inputValue * 1000000000000);
             const proxyExtrinsic = this.api.tx.proxy.proxy(
                 this.stashAddress,
@@ -96,11 +89,18 @@ export class ContractCalls {
         });
     }
 
-    public async withdraw(payload: AnyJson, inputValue: number, gassLimit: number) {
-        const withdrawExtrinsic = await this.messageExtrinsic(payload, inputValue, gassLimit) as any;
+    public async withdraw(unestakeId: number, balance: number) {
+        const currentEra = await this.getCurrentEra();
+
+        const payload = [
+            unestakeId,
+            currentEra
+        ]
+
+        const withdrawExtrinsic = await this.messageExtrinsic(payload, 0, 1) as any;
 
         await this.signer(withdrawExtrinsic, async () => {
-            const transferExtrinsic = this.api.tx.balances.transfer(this.account?.decodedAddress!, inputValue * 1000000000000);
+            const transferExtrinsic = this.api.tx.balances.transfer(this.account?.decodedAddress!, balance * 1000000000000);
             const proxyExtrinsic = this.api.tx.proxy.proxy(
                 this.stashAddress,
                 null,
@@ -173,8 +173,29 @@ export class ContractCalls {
 
     public async getLockedBalance() {
         const result = (await this.getState({ GetUserVaraLocked: this.account?.decodedAddress }));
-        console.log(result);
         return result === 0 ? 0 : result.userVaraLocked;
+    }
+
+    public async getCurrentEra(): Promise<number> {
+        const option =  (await this.api?.query.staking.currentEra());
+        return option.unwrap().toNumber();
+    } 
+
+    public async getGVaraBalance() {
+        const result = await this.getFTState();
+        console.log(result)
+        return result.toNumber();
+    }
+
+    private async getFTState() {
+        const store = await this.api?.programState.read({
+            programId: this.ftSource,
+            payload: {
+                BalanceOf: this.account?.decodedAddress,
+            },  
+        }, this.ftMetadata)
+
+        return (store as any).asBalance;
     }
 
     private async getState(payload: AnyJson = {}) {
@@ -239,12 +260,14 @@ export class ContractCalls {
         await messageExtrinsic.signAndSend(
             this.account?.address ?? this.alert.error("No account found", this.alertStyle),
             { signer: injector.signer },
-            ({ status }) => {
+            ({ status, isError }) => {
                 if (status.isInBlock) {
                     this.alert.success(status.asInBlock.toHuman()?.toString(), this.alertStyle);
                 } else if (status.isFinalized) {
                     this.alert.success(status.type, this.alertStyle);
-                    continueWith();
+                    if (!isError) {
+                        continueWith();
+                    }
                 }
             }
         )

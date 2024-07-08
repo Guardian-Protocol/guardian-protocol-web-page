@@ -125,8 +125,7 @@ function Stake({
                                                 setStakeAmount(Number(value));
 
                                                 contractCalls.gasLimit("staking", { stake: Number(value) }, Number(value)).then((calculatedGas) => {
-                                                    console.log(calculatedGas);
-                                                    setGas(calculatedGas);
+                                                    setGas(10000000000);
                                                 });
                                             }
                                         }}

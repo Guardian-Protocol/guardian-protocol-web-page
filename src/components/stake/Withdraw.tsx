@@ -14,34 +14,52 @@ type WithdrawProps = {
   contractCalls: ContractCalls;
 };
 
-function Withdraw({contractCalls }: WithdrawProps) {
+function Withdraw({contractCalls}: WithdrawProps) {
   
   const [unestakeHistory, setUnestakeHistory] = useState<any[]>([
-      {
-        amount: "88",
-        liberationEra: "0",
-        liberationDays: "7",
-        unestakeId: "0"
-      }
-    ]);
+    {
+      amount: "88",
+      liberationEra: "0",
+      liberationDays: "7",
+      unestakeId: "0"
+    }
+  ]);
+
+  const [currentEra, setCurrentEra] = useState<number>(0);
+  const [isHistoryEmpty, setIsHistoryEmpty] = useState<boolean>(false);
+
+  const handleWithdraw = (unestakeId: number, amount: number) => {
+    contractCalls.withdraw(unestakeId, amount).then((response) => {
+      console.log(response);
+    });
+  }
 
   useEffect(() => {
     contractCalls.getUnestakeHistory().then((history) => {
       if(history !== 0) {
+
+        if (history.length === 0) {
+          setIsHistoryEmpty(true);
+        }
+
         setUnestakeHistory(history)
       }
+    });
+
+    contractCalls.getCurrentEra().then((era) => {
+      setCurrentEra(era);
     });
   }, [contractCalls])
 
 
-  if (unestakeHistory[0]?.liberationEra === "0") {
+  if (isHistoryEmpty) {
     return (
       <TabPanel
         display="flex"
         justifyContent="center"
         alignItems="center"
       >
-        <Text fontSize="lg" fontWeight="bold">You have no Unestakes made</Text>
+        <Text fontSize="lg" fontWeight="bold">There is no unestakes</Text>
       </TabPanel>
     );
   }
@@ -86,11 +104,16 @@ function Withdraw({contractCalls }: WithdrawProps) {
               </Flex>
             </Flex>
             <Button
+              onClick={() =>{
+                if (currentEra > history?.liberationEra) {
+                  handleWithdraw(history?.unestakeId, history?.amount);
+                }
+              }}
               colorScheme="teal"
               size="lg"
               style={{
                 color: "black",
-                background: "#F8AD18",
+                background: (currentEra > history?.liberationEra) ? "#F8AD18" : "#38A169",
                 width: "140px",
               }}
             >

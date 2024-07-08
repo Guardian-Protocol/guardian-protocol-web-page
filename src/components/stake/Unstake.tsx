@@ -214,25 +214,6 @@ function Unstake({
                             <Td isNumeric>.</Td>
                         </Tr>
 
-                        <Grid templateColumns="1fr auto" gap="4">
-                            <Tr textColor="white">
-                                <Td fontSize="18px" style={{ color: "white" }}>
-                                    Total Balance
-                                </Td>
-                                <Td style={{ visibility: "hidden", color: "white" }}>
-                                    .
-                                </Td>
-                            </Tr>
-                            <Td
-                                fontSize="18px"
-                                isNumeric
-                                textAlign="end"
-                                style={{ color: "white" }}
-                            >
-                                {lockedBalance} gVARA
-                            </Td>
-                        </Grid>
-
                         <TabPanel
                             display="flex"
                             justifyContent="center"

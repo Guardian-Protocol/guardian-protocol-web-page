@@ -10,7 +10,7 @@ type Props = {
 
 function Header({ isAccountVisible }: Props) {
   return (
-    <Box w="100%" pl={90} pr={90} pb={4} pt={4} className={styles.header} backgroundColor="#F9B830" >
+    <Box w="100%" pl={90} pr={90} pb={4} pt={4} className={styles.header}>
       <h1>
         <Link to="/guardian-protocol-web-page">
           <Image src={GuardianLogo} width='140px' alt="Logo" className={styles.logo}/>

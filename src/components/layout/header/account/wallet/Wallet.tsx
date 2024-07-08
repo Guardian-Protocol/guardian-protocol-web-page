@@ -6,15 +6,21 @@ type Props = {
   balance: Account['balance'];
   address: string;
   name: string | undefined;
+  gvara: number;
   onClick: () => void;
 };
 
-function Wallet({ balance, address, name, onClick }: Props) {
+function Wallet({ balance, address, name, gvara, onClick }: Props) {
   return (
     <div className={styles.wallet}>
-      <p className={styles.balance}>
-        {balance.value} <span className={styles.currency} style={{color: 'black'}}>{balance.unit}</span>
-      </p>
+      <div className={styles.outerContainerWallet}>
+        <p className={styles.balance}>
+          {gvara} <span className={styles.currency}>gVARA</span>
+        </p>
+        <p className={styles.balance}>
+          {balance.value} <span className={styles.currency}>{balance.unit}</span>
+        </p>
+      </div>
       <AccountButton address={address} name={name} onClick={onClick} />
     </div>
   );

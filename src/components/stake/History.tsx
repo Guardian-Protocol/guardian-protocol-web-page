@@ -24,7 +24,6 @@ function History({contractCalls}: HistoryProps) {
 
     contractCalls.getHistory().then((history) => {
         if (history !== 0) {
-            console.log(history);
             setTransactionHistory(history);
         }
     });
@@ -54,20 +53,18 @@ function History({contractCalls}: HistoryProps) {
                             <Flex align="center" w="70%" justify="space-between">
                                 <Flex direction="column" justify="space-between">
                                     <Flex align="center">
-                                        <Text fontSize="lg" fontWeight="bold">Request Amount</Text>
+                                        <Text fontSize="lg" fontWeight="bold">Guardian protocol transaction</Text>
                                     </Flex>
                                 </Flex>
                                 <Flex direction="column" alignItems="flex-end">
                                     <Flex align="center">
-                                        <Text fontSize="lg" fontWeight="bold">{history.transactionAmount}</Text>
+                                        <Text fontSize="lg" fontWeight="bold">{history.amount}</Text>
                                         <Image src={VaraLogo} boxSize="40px" ml={2} />
-
                                     </Flex>
                                 </Flex>
-
                             </Flex>
                             <Flex align="center" w="30%" justifyContent="center">
-                                <Text fontSize="lg" fontWeight="bold">{history.transactionType}</Text>
+                                <Text fontSize="lg" fontWeight="bold">{history.transactionType.toUpperCase()} $</Text>
                             </Flex>
                         </Flex>
                     </Box>

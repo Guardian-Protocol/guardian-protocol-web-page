@@ -30,7 +30,7 @@ function Main() {
 
   return (
     <>
-      <GridItem h="650px" w="100%" bg="#F8AD18">
+      <GridItem h="630px" w="100%" bg="#F8AD18">
         <Center>
           <HStack>
             <Flex direction="row" gap="250">

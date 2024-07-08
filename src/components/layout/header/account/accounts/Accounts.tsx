@@ -47,7 +47,7 @@ function Accounts({ list, onChange }: Props) {
 
 
   return isAnyAccount ? (
-    <Flex direction="column" alignItems="flex-start">
+    <Flex direction="column">
       {!selectedSource ? (
         <SourceButtons list={list} onSelect={handleSourceClick} logo={VaraLogo}/>
       ) : (
